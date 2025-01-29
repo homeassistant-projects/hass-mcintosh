@@ -8,6 +8,8 @@
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
+[![Support on Patreon][patreon-shield]][patreon]
+
 
 ![McIntosh Logo](https://raw.githubusercontent.com/rsnodgrass/hass-mcintosh/main/brands/logo.png)
 
@@ -56,3 +58,12 @@ media_player:
 * [Community support discussion thread](https://community.home-assistant.io/t/mcintosh-dayton-audio-sonance-multi-zone-amps/450908)
 * [pyavcontrol](https://github.com/rsnodgrass/pyavcontrol)
 * [RS232 to USB cable](https://www.amazon.com/RS232-to-USB/dp/B0759HSLP1?tag=carreramfi-20)
+
+
+
+
+[forum]: https://forum/mcintosh
+[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg
+[patreon]: https://www.patreon.com/rsnodgrass
+[patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
+[project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg

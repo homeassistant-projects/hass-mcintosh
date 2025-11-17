@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "McIntosh A/V Processor Installatie",
+        "description": "Configureer uw McIntosh MX160, MX170 of MX180 processor",
+        "data": {
+          "model_id": "Model",
+          "url": "Verbinding (seriële poort of socket://IP:poort)",
+          "baudrate": "Baudrate (optioneel)"
+        },
+        "data_description": {
+          "model_id": "Selecteer uw McIntosh processor model",
+          "url": "Seriële poort (bijv. /dev/ttyUSB0) of netwerkadres (bijv. socket://192.168.1.100:84)",
+          "baudrate": "Seriële baudrate (standaard: 115200)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken met het apparaat. Controleer uw verbindingsinstellingen en zorg ervoor dat het apparaat is ingeschakeld.",
+      "unsupported": "Dit apparaatmodel wordt niet ondersteund. Ondersteunde modellen: MX160, MX170, MX180."
+    },
+    "abort": {
+      "already_configured": "Dit apparaat is al geconfigureerd."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "McIntosh Configuratie-opties",
+        "description": "Configureer verbindings- en broninstellingen",
+        "menu_options": {
+          "connection": "Verbindingsinstellingen",
+          "sources": "Bronnamen"
+        }
+      },
+      "connection": {
+        "title": "Verbindingsinstellingen",
+        "description": "Wijzig verbindingsparameters voor uw McIntosh processor",
+        "data": {
+          "url": "Verbinding (seriële poort of socket://IP:poort)",
+          "baudrate": "Baudrate (optioneel)"
+        },
+        "data_description": {
+          "url": "Seriële poort (bijv. /dev/ttyUSB0) of netwerkadres (bijv. socket://192.168.1.100:84)",
+          "baudrate": "Seriële baudrate (standaard: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Bronnamen",
+        "description": "Configureer aangepaste namen voor uw bronnen. Laat leeg om standaardwaarden te gebruiken.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USB Audio",
+          "source_18": "Analoog 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Basafstelling"
+      },
+      "treble_trim": {
+        "name": "Treble-afstelling"
+      },
+      "lipsync_delay": {
+        "name": "Lipsync-vertraging"
+      },
+      "center_channel_trim": {
+        "name": "Center Kanaal Afstelling"
+      },
+      "lfe_channel_trim": {
+        "name": "LFE Kanaal Afstelling"
+      },
+      "surround_channels_trim": {
+        "name": "Surround Kanalen Afstelling"
+      },
+      "height_channels_trim": {
+        "name": "Hoogte Kanalen Afstelling"
+      }
+    }
+  }
+}

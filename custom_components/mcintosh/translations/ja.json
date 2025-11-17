@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "McIntosh A/Vプロセッサーセットアップ",
+        "description": "McIntosh MX160、MX170、またはMX180プロセッサーを設定",
+        "data": {
+          "model_id": "モデル",
+          "url": "接続（シリアルポートまたはsocket://IP:ポート）",
+          "baudrate": "ボーレート（オプション）"
+        },
+        "data_description": {
+          "model_id": "McIntoshプロセッサーのモデルを選択",
+          "url": "シリアルポート（例：/dev/ttyUSB0）またはネットワークアドレス（例：socket://192.168.1.100:84）",
+          "baudrate": "シリアルボーレート（デフォルト：115200）"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "デバイスに接続できませんでした。接続設定を確認し、デバイスの電源が入っていることを確認してください。",
+      "unsupported": "このデバイスモデルはサポートされていません。サポートされているモデル：MX160、MX170、MX180。"
+    },
+    "abort": {
+      "already_configured": "このデバイスは既に設定されています。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "McIntosh設定オプション",
+        "description": "接続と入力ソースの設定",
+        "menu_options": {
+          "connection": "接続設定",
+          "sources": "入力ソース名"
+        }
+      },
+      "connection": {
+        "title": "接続設定",
+        "description": "McIntoshプロセッサーの接続パラメータを変更",
+        "data": {
+          "url": "接続（シリアルポートまたはsocket://IP:ポート）",
+          "baudrate": "ボーレート（オプション）"
+        },
+        "data_description": {
+          "url": "シリアルポート（例：/dev/ttyUSB0）またはネットワークアドレス（例：socket://192.168.1.100:84）",
+          "baudrate": "シリアルボーレート（デフォルト：115200）"
+        }
+      },
+      "sources": {
+        "title": "入力ソース名",
+        "description": "入力ソースのカスタム名を設定します。空白のままにするとデフォルトが使用されます。",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USBオーディオ",
+          "source_18": "アナログ1",
+          "source_24": "フォノ"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "ラウドネス"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "低音調整"
+      },
+      "treble_trim": {
+        "name": "高音調整"
+      },
+      "lipsync_delay": {
+        "name": "リップシンク遅延"
+      },
+      "center_channel_trim": {
+        "name": "センターチャンネル調整"
+      },
+      "lfe_channel_trim": {
+        "name": "LFEチャンネル調整"
+      },
+      "surround_channels_trim": {
+        "name": "サラウンドチャンネル調整"
+      },
+      "height_channels_trim": {
+        "name": "ハイトチャンネル調整"
+      }
+    }
+  }
+}

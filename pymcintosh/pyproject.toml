@@ -18,8 +18,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = 'https://github.com/rsnodgrass/hass-mcintosh'
-Repository = 'https://github.com/rsnodgrass/hass-mcintosh'
+Homepage = 'https://github.com/homeassistant-community/hass-mcintosh'
+Repository = 'https://github.com/homeassistant-community/hass-mcintosh'
 
 [tool.ruff]
 line-length = 100

@@ -17,7 +17,7 @@ setup(
     version=VERSION,
     description='Python library for controlling McIntosh MX160/MX170/MX180 processors',
     author='Ryan Snodgrass',
-    url='https://github.com/rsnodgrass/hass-mcintosh',
+    url='https://github.com/homeassistant-community/hass-mcintosh',
     packages=['pymcintosh'],
     install_requires=[
         'pyserial>=3.5',

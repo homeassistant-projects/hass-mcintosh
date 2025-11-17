@@ -119,7 +119,7 @@ All 26 McIntosh source inputs are supported:
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/rsnodgrass/hass-mcintosh/issues)
+- **Issues**: [GitHub Issues](https://github.com/homeassistant-community/hass-mcintosh/issues)
 - **Community**: [Home Assistant Community Forum](https://community.home-assistant.io/t/mcintosh-dayton-audio-sonance-multi-zone-amps/450908)
 - **Pull Requests**: Contributions welcome!
 

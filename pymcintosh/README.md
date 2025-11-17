@@ -231,9 +231,9 @@ client = get_mcintosh('mx160', '/dev/ttyUSB0', timeout=5.0)
 
 ## Related Projects
 
-- [hass-mcintosh](https://github.com/rsnodgrass/hass-mcintosh) - Home Assistant integration
-- [pyavcontrol](https://github.com/rsnodgrass/pyavcontrol) - Generalized A/V control library
-- [pyxantech](https://github.com/rsnodgrass/pyxantech) - Similar library for Xantech amps
+- [hass-mcintosh](https://github.com/homeassistant-community/hass-mcintosh) - Home Assistant integration
+- [pyavcontrol](https://github.com/homeassistant-community/pyavcontrol) - Generalized A/V control library
+- [pyxantech](https://github.com/homeassistant-community/pyxantech) - Similar library for Xantech amps
 
 ## License
 

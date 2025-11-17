@@ -1,4 +1,4 @@
-# McIntosh A/V Control for Home Assistant (IMPLEMENTATION IN PROGRESS)
+# McIntosh A/V Control for Home Assistant
 
 ![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 ![release_badge](https://img.shields.io/github/v/release/rsnodgrass/hass-mcintosh.svg)
@@ -13,21 +13,31 @@
 
 ![McIntosh Logo](https://raw.githubusercontent.com/rsnodgrass/hass-mcintosh/main/brands/logo.png)
 
-# THIS DO NOT WORK! THIS IS IN PROGRESS.
+Control your McIntosh MX160, MX170, or MX180 audio/video processor from Home Assistant via RS232 or IP connection.
 
-My MX160 was broken in shipping and so I no longer have a device for testing or development so progress has been slow. This integration and underlying libraries is expected to be completed late 2024.
+## Status
 
-## LOOKING TO BUY MX160 or MX170
+**Ready for testing!** The integration is feature-complete and ready for hardware testing. If you have an MX160, MX170, or MX180, please test and report any issues.
 
-If you have an MX160 or MX170 you are looking to sell, please contact me.
+## Features
 
-## Support
+- Full media player control (power, volume, mute, source selection)
+- Support for all 26 source inputs (HDMI, SPDIF, USB, Analog, Balanced, Phono)
+- Custom source naming via UI configuration
+- Zone 2 support (via pymcintosh library)
+- RS232 serial and IP/socket connection support
+- Config flow UI for easy setup
+- Options flow for reconfiguration
 
-Visit the [community support discussion thread](XXXXXX) for issues with this integration. If you have a code change or bug fix, feel free to submit a Pull Request.
+## Supported Devices
 
-### Supported Devices
+| Model | Status | Notes |
+|-------|--------|-------|
+| McIntosh MX160 | Untested | Should work, needs hardware testing |
+| McIntosh MX170 | Untested | Should work, needs hardware testing |
+| McIntosh MX180 | Untested | Should work, needs hardware testing |
 
-See *[pyavcontrol](https://github.com/rsnodgrass/pyavcontrol/blob/main/SUPPORTED.md#McIntosh)* for a full list of supported hardware.
+**Note:** All models use the same RS232/IP protocol. If you can test with hardware, please report your results!
 
 ## Installation
 
@@ -53,11 +63,80 @@ media_player:
         name: "FireTV"
 ```
 
+## Hardware Requirements
+
+### RS232 Connection
+
+- **RS232 to USB adapter**: [Example cable](https://www.amazon.com/RS232-to-USB/dp/B0759HSLP1?tag=carreramfi-20)
+- **Baud rate**: 115200 (default)
+- **Protocol**: 8N1 (8 data bits, no parity, 1 stop bit)
+
+### IP/Network Connection
+
+- **Port**: 84 (default)
+- Your McIntosh processor must support network control
+- Ensure your processor is connected to your network
+
+## Supported Controls
+
+| Feature | Main Zone | Zone 2 |
+|---------|-----------|--------|
+| Power On/Off | ✅ | ✅ (via library) |
+| Volume Control | ✅ | ✅ (via library) |
+| Mute | ✅ | ✅ (via library) |
+| Source Selection | ✅ | ✅ (via library) |
+| Volume Range | 0-99 | 0-99 |
+
+**Note:** Zone 2 controls are available through the pymcintosh library but not yet exposed in the HA UI.
+
+## Source Inputs
+
+All 26 McIntosh source inputs are supported:
+
+- **HDMI 1-8** (sources 0-7)
+- **Audio Return** (source 8)
+- **SPDIF 1-8** (sources 9-16): Optical and Coaxial digital
+- **USB Audio** (source 17)
+- **Analog 1-4** (sources 18-21)
+- **Balanced 1-2** (sources 22-23)
+- **Phono** (source 24)
+- **8 Channel Analog** (source 25)
+
+## Troubleshooting
+
+### Connection Issues
+
+- Verify the correct serial port or IP address
+- Check that your RS232 cable is properly connected
+- Ensure baud rate matches your processor settings (default: 115200)
+- For IP connections, verify port 84 is accessible
+
+### Integration Not Loading
+
+- Check Home Assistant logs for error messages
+- Verify `pymcintosh` directory exists in HA root
+- Restart Home Assistant after installation
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/rsnodgrass/hass-mcintosh/issues)
+- **Community**: [Home Assistant Community Forum](https://community.home-assistant.io/t/mcintosh-dayton-audio-sonance-multi-zone-amps/450908)
+- **Pull Requests**: Contributions welcome!
+
+## Technical Details
+
+This integration uses the embedded `pymcintosh` Python library for communication with McIntosh processors. The library implements the McIntosh RS232/IP protocol with:
+
+- Async/await support for Home Assistant
+- Command throttling to prevent device overload
+- Proper error handling and recovery
+- Model-specific configurations (MX160/MX170/MX180)
+
 ## See Also
 
-* [Community support discussion thread](https://community.home-assistant.io/t/mcintosh-dayton-audio-sonance-multi-zone-amps/450908)
-* [pyavcontrol](https://github.com/rsnodgrass/pyavcontrol)
-* [RS232 to USB cable](https://www.amazon.com/RS232-to-USB/dp/B0759HSLP1?tag=carreramfi-20)
+* [pymcintosh library](pymcintosh/) - Standalone Python library for McIntosh control
+* [RS232 Protocol Documentation](pymcintosh/models.py) - Command reference
+* [Example Usage](pymcintosh/example-async.py) - Python library examples
 
 
 

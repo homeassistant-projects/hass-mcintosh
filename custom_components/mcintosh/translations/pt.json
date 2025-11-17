@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuração do processador A/V McIntosh",
+        "description": "Configure seu processador McIntosh MX160, MX170 ou MX180",
+        "data": {
+          "model_id": "Modelo",
+          "url": "Conexão (porta serial ou socket://IP:porta)",
+          "baudrate": "Taxa de transmissão (opcional)"
+        },
+        "data_description": {
+          "model_id": "Selecione o modelo do seu processador McIntosh",
+          "url": "Porta serial (ex: /dev/ttyUSB0) ou endereço de rede (ex: socket://192.168.1.100:84)",
+          "baudrate": "Taxa de transmissão serial (padrão: 115200)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Falha ao conectar ao dispositivo. Verifique as configurações de conexão e certifique-se de que o dispositivo está ligado.",
+      "unsupported": "Este modelo de dispositivo não é suportado. Modelos suportados: MX160, MX170, MX180."
+    },
+    "abort": {
+      "already_configured": "Este dispositivo já está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opções de configuração McIntosh",
+        "description": "Configurar conexão e definições de fonte",
+        "menu_options": {
+          "connection": "Configurações de conexão",
+          "sources": "Nomes das fontes"
+        }
+      },
+      "connection": {
+        "title": "Configurações de conexão",
+        "description": "Modificar os parâmetros de conexão do seu processador McIntosh",
+        "data": {
+          "url": "Conexão (porta serial ou socket://IP:porta)",
+          "baudrate": "Taxa de transmissão (opcional)"
+        },
+        "data_description": {
+          "url": "Porta serial (ex: /dev/ttyUSB0) ou endereço de rede (ex: socket://192.168.1.100:84)",
+          "baudrate": "Taxa de transmissão serial (padrão: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Nomes das fontes",
+        "description": "Configure nomes personalizados para suas fontes. Deixe em branco para usar valores padrão.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "Áudio USB",
+          "source_18": "Analógico 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Ajuste de graves"
+      },
+      "treble_trim": {
+        "name": "Ajuste de agudos"
+      },
+      "lipsync_delay": {
+        "name": "Atraso de sincronização labial"
+      },
+      "center_channel_trim": {
+        "name": "Ajuste canal central"
+      },
+      "lfe_channel_trim": {
+        "name": "Ajuste canal LFE"
+      },
+      "surround_channels_trim": {
+        "name": "Ajuste canais surround"
+      },
+      "height_channels_trim": {
+        "name": "Ajuste canais de altura"
+      }
+    }
+  }
+}

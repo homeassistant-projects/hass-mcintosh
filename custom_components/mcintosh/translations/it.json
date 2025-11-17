@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurazione processore A/V McIntosh",
+        "description": "Configura il tuo processore McIntosh MX160, MX170 o MX180",
+        "data": {
+          "model_id": "Modello",
+          "url": "Connessione (porta seriale o socket://IP:porta)",
+          "baudrate": "Baud rate (opzionale)"
+        },
+        "data_description": {
+          "model_id": "Seleziona il modello del tuo processore McIntosh",
+          "url": "Porta seriale (es. /dev/ttyUSB0) o indirizzo di rete (es. socket://192.168.1.100:84)",
+          "baudrate": "Baud rate seriale (predefinito: 115200)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile connettersi al dispositivo. Verificare le impostazioni di connessione e assicurarsi che il dispositivo sia acceso.",
+      "unsupported": "Questo modello di dispositivo non è supportato. Modelli supportati: MX160, MX170, MX180."
+    },
+    "abort": {
+      "already_configured": "Questo dispositivo è già configurato."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni di configurazione McIntosh",
+        "description": "Configura connessione e impostazioni sorgenti",
+        "menu_options": {
+          "connection": "Impostazioni di connessione",
+          "sources": "Nomi delle sorgenti"
+        }
+      },
+      "connection": {
+        "title": "Impostazioni di connessione",
+        "description": "Modifica i parametri di connessione del tuo processore McIntosh",
+        "data": {
+          "url": "Connessione (porta seriale o socket://IP:porta)",
+          "baudrate": "Baud rate (opzionale)"
+        },
+        "data_description": {
+          "url": "Porta seriale (es. /dev/ttyUSB0) o indirizzo di rete (es. socket://192.168.1.100:84)",
+          "baudrate": "Baud rate seriale (predefinito: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Nomi delle sorgenti",
+        "description": "Configura nomi personalizzati per le tue sorgenti. Lascia vuoto per usare i valori predefiniti.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "Audio USB",
+          "source_18": "Analogico 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Regolazione bassi"
+      },
+      "treble_trim": {
+        "name": "Regolazione alti"
+      },
+      "lipsync_delay": {
+        "name": "Ritardo sincronizzazione labiale"
+      },
+      "center_channel_trim": {
+        "name": "Regolazione canale centrale"
+      },
+      "lfe_channel_trim": {
+        "name": "Regolazione canale LFE"
+      },
+      "surround_channels_trim": {
+        "name": "Regolazione canali surround"
+      },
+      "height_channels_trim": {
+        "name": "Regolazione canali altezza"
+      }
+    }
+  }
+}

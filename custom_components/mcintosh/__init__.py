@@ -19,7 +19,7 @@ from .utils import get_connection_overrides
 
 LOG = logging.getLogger(__name__)
 
-PLATFORMS = [Platform.MEDIA_PLAYER]
+PLATFORMS = [Platform.MEDIA_PLAYER, Platform.SWITCH, Platform.NUMBER]
 
 
 @dataclass

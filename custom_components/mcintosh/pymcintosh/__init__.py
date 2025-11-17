@@ -287,6 +287,202 @@ class Zone2SourceControl:
         return self._client._send_command('!ZSRC-')
 
 
+class BassTrebleControl:
+    """Bass and treble trim controls."""
+
+    def __init__(self, client):
+        self._client = client
+
+    def get_bass(self) -> Optional[int]:
+        """Get bass level trim (10 = 1dB)."""
+        response = self._client._send_command('!TRIMBASS?')
+        if response and '!TRIMBASS(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    def set_bass(self, level: int):
+        """Set bass level trim (10 = 1dB)."""
+        return self._client._send_command(f'!TRIMBASS({level})')
+
+    def bass_up(self):
+        """Increase bass level trim."""
+        return self._client._send_command('!TRIMBASS+')
+
+    def bass_down(self):
+        """Decrease bass level trim."""
+        return self._client._send_command('!TRIMBASS-')
+
+    def get_treble(self) -> Optional[int]:
+        """Get treble level trim (10 = 1dB, -120 to +120)."""
+        response = self._client._send_command('!TRIMTREB?')
+        if response and ('!TRIMTREB(' in response or '!TRIMTREBLE(' in response):
+            # handle both MX160 (!TRIMTREB) and MX170+ (!TRIMTREBLE) responses
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    def set_treble(self, level: int):
+        """Set treble level trim (10 = 1dB, -120 to +120)."""
+        level = max(-120, min(120, level))
+        return self._client._send_command(f'!TRIMTREB({level})')
+
+    def treble_up(self):
+        """Increase treble level trim."""
+        return self._client._send_command('!TRIMTREB+')
+
+    def treble_down(self):
+        """Decrease treble level trim."""
+        return self._client._send_command('!TRIMTREB-')
+
+
+class LoudnessControl:
+    """Loudness control."""
+
+    def __init__(self, client):
+        self._client = client
+
+    def on(self):
+        """Turn loudness on."""
+        return self._client._send_command('!LOUDNESS(1)')
+
+    def off(self):
+        """Turn loudness off."""
+        return self._client._send_command('!LOUDNESS(0)')
+
+    def get(self) -> Optional[bool]:
+        """Get loudness status (True=on, False=off)."""
+        response = self._client._send_command('!LOUDNESS?')
+        if response and '!LOUDNESS(' in response:
+            state = response.split('(')[1].split(')')[0]
+            return state == '1'
+        return None
+
+
+class LipsyncControl:
+    """Lipsync delay control."""
+
+    def __init__(self, client):
+        self._client = client
+
+    def get(self) -> Optional[int]:
+        """Get lipsync delay value."""
+        response = self._client._send_command('!LIPSYNC?')
+        if response and '!LIPSYNC(' in response:
+            value = response.split('(')[1].split(')')[0]
+            return int(value)
+        return None
+
+    def set(self, value: int):
+        """Set lipsync delay value."""
+        return self._client._send_command(f'!LIPSYNC({value})')
+
+    def up(self):
+        """Increase lipsync delay."""
+        return self._client._send_command('!LIPSYNC+')
+
+    def down(self):
+        """Decrease lipsync delay."""
+        return self._client._send_command('!LIPSYNC-')
+
+    def get_range(self) -> Optional[Dict[str, int]]:
+        """Get lipsync range (min/max values)."""
+        response = self._client._send_command('!LIPSYNCRANGE?')
+        if response and '!LIPSYNCRANGE(' in response:
+            # parse: !LIPSYNCRANGE(min,max)
+            values = response.split('(')[1].split(')')[0].split(',')
+            if len(values) == 2:
+                return {'min': int(values[0]), 'max': int(values[1])}
+        return None
+
+
+class ChannelTrimControl:
+    """Channel level trim controls (center, lfe, surrounds, height)."""
+
+    def __init__(self, client):
+        self._client = client
+
+    def get_center(self) -> Optional[int]:
+        """Get center channel level trim (10 = 1dB)."""
+        response = self._client._send_command('!TRIMCENTER?')
+        if response and '!TRIMCENTER(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    def set_center(self, level: int):
+        """Set center channel level trim (10 = 1dB)."""
+        return self._client._send_command(f'!TRIMCENTER({level})')
+
+    def center_up(self):
+        """Increase center channel level trim."""
+        return self._client._send_command('!TRIMCENTER+')
+
+    def center_down(self):
+        """Decrease center channel level trim."""
+        return self._client._send_command('!TRIMCENTER-')
+
+    def get_lfe(self) -> Optional[int]:
+        """Get LFE channel level trim (10 = 1dB)."""
+        response = self._client._send_command('!TRIMLFE?')
+        if response and '!TRIMLFE(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    def set_lfe(self, level: int):
+        """Set LFE channel level trim (10 = 1dB)."""
+        return self._client._send_command(f'!TRIMLFE({level})')
+
+    def lfe_up(self):
+        """Increase LFE channel level trim."""
+        return self._client._send_command('!TRIMLFE+')
+
+    def lfe_down(self):
+        """Decrease LFE channel level trim."""
+        return self._client._send_command('!TRIMLFE-')
+
+    def get_surrounds(self) -> Optional[int]:
+        """Get surround channels level trim (10 = 1dB)."""
+        response = self._client._send_command('!TRIMSURRS?')
+        if response and '!TRIMSURRS(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    def set_surrounds(self, level: int):
+        """Set surround channels level trim (10 = 1dB)."""
+        return self._client._send_command(f'!TRIMSURRS({level})')
+
+    def surrounds_up(self):
+        """Increase surround channels level trim."""
+        return self._client._send_command('!TRIMSURRS+')
+
+    def surrounds_down(self):
+        """Decrease surround channels level trim."""
+        return self._client._send_command('!TRIMSURRS-')
+
+    def get_height(self) -> Optional[int]:
+        """Get height channels level trim (10 = 1dB)."""
+        response = self._client._send_command('!TRIMHEIGHT?')
+        if response and '!TRIMHEIGHT(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    def set_height(self, level: int):
+        """Set height channels level trim (10 = 1dB)."""
+        return self._client._send_command(f'!TRIMHEIGHT({level})')
+
+    def height_up(self):
+        """Increase height channels level trim."""
+        return self._client._send_command('!TRIMHEIGHT+')
+
+    def height_down(self):
+        """Decrease height channels level trim."""
+        return self._client._send_command('!TRIMHEIGHT-')
+
+
 class DeviceControl:
     """Device info and utility commands."""
 
@@ -387,6 +583,10 @@ class McIntoshSync:
         self.mute = MuteControl(self)
         self.source = SourceControl(self)
         self.zone_2 = Zone2Control(self)
+        self.bass_treble = BassTrebleControl(self)
+        self.loudness = LoudnessControl(self)
+        self.lipsync = LipsyncControl(self)
+        self.channel_trim = ChannelTrimControl(self)
         self.device = DeviceControl(self)
 
         # send connection init if specified
@@ -443,6 +643,10 @@ class McIntoshAsync:
         self.mute = AsyncMuteControl(self)
         self.source = AsyncSourceControl(self)
         self.zone_2 = AsyncZone2Control(self)
+        self.bass_treble = AsyncBassTrebleControl(self)
+        self.loudness = AsyncLoudnessControl(self)
+        self.lipsync = AsyncLipsyncControl(self)
+        self.channel_trim = AsyncChannelTrimControl(self)
         self.device = AsyncDeviceControl(self)
 
     async def _send_command(self, command: str) -> Optional[str]:
@@ -640,6 +844,148 @@ class AsyncZone2SourceControl(Zone2SourceControl):
 
     async def previous(self):
         return await self._client._send_command('!ZSRC-')
+
+
+class AsyncBassTrebleControl(BassTrebleControl):
+    async def get_bass(self) -> Optional[int]:
+        response = await self._client._send_command('!TRIMBASS?')
+        if response and '!TRIMBASS(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    async def set_bass(self, level: int):
+        return await self._client._send_command(f'!TRIMBASS({level})')
+
+    async def bass_up(self):
+        return await self._client._send_command('!TRIMBASS+')
+
+    async def bass_down(self):
+        return await self._client._send_command('!TRIMBASS-')
+
+    async def get_treble(self) -> Optional[int]:
+        response = await self._client._send_command('!TRIMTREB?')
+        if response and ('!TRIMTREB(' in response or '!TRIMTREBLE(' in response):
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    async def set_treble(self, level: int):
+        level = max(-120, min(120, level))
+        return await self._client._send_command(f'!TRIMTREB({level})')
+
+    async def treble_up(self):
+        return await self._client._send_command('!TRIMTREB+')
+
+    async def treble_down(self):
+        return await self._client._send_command('!TRIMTREB-')
+
+
+class AsyncLoudnessControl(LoudnessControl):
+    async def on(self):
+        return await self._client._send_command('!LOUDNESS(1)')
+
+    async def off(self):
+        return await self._client._send_command('!LOUDNESS(0)')
+
+    async def get(self) -> Optional[bool]:
+        response = await self._client._send_command('!LOUDNESS?')
+        if response and '!LOUDNESS(' in response:
+            state = response.split('(')[1].split(')')[0]
+            return state == '1'
+        return None
+
+
+class AsyncLipsyncControl(LipsyncControl):
+    async def get(self) -> Optional[int]:
+        response = await self._client._send_command('!LIPSYNC?')
+        if response and '!LIPSYNC(' in response:
+            value = response.split('(')[1].split(')')[0]
+            return int(value)
+        return None
+
+    async def set(self, value: int):
+        return await self._client._send_command(f'!LIPSYNC({value})')
+
+    async def up(self):
+        return await self._client._send_command('!LIPSYNC+')
+
+    async def down(self):
+        return await self._client._send_command('!LIPSYNC-')
+
+    async def get_range(self) -> Optional[Dict[str, int]]:
+        response = await self._client._send_command('!LIPSYNCRANGE?')
+        if response and '!LIPSYNCRANGE(' in response:
+            values = response.split('(')[1].split(')')[0].split(',')
+            if len(values) == 2:
+                return {'min': int(values[0]), 'max': int(values[1])}
+        return None
+
+
+class AsyncChannelTrimControl(ChannelTrimControl):
+    async def get_center(self) -> Optional[int]:
+        response = await self._client._send_command('!TRIMCENTER?')
+        if response and '!TRIMCENTER(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    async def set_center(self, level: int):
+        return await self._client._send_command(f'!TRIMCENTER({level})')
+
+    async def center_up(self):
+        return await self._client._send_command('!TRIMCENTER+')
+
+    async def center_down(self):
+        return await self._client._send_command('!TRIMCENTER-')
+
+    async def get_lfe(self) -> Optional[int]:
+        response = await self._client._send_command('!TRIMLFE?')
+        if response and '!TRIMLFE(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    async def set_lfe(self, level: int):
+        return await self._client._send_command(f'!TRIMLFE({level})')
+
+    async def lfe_up(self):
+        return await self._client._send_command('!TRIMLFE+')
+
+    async def lfe_down(self):
+        return await self._client._send_command('!TRIMLFE-')
+
+    async def get_surrounds(self) -> Optional[int]:
+        response = await self._client._send_command('!TRIMSURRS?')
+        if response and '!TRIMSURRS(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    async def set_surrounds(self, level: int):
+        return await self._client._send_command(f'!TRIMSURRS({level})')
+
+    async def surrounds_up(self):
+        return await self._client._send_command('!TRIMSURRS+')
+
+    async def surrounds_down(self):
+        return await self._client._send_command('!TRIMSURRS-')
+
+    async def get_height(self) -> Optional[int]:
+        response = await self._client._send_command('!TRIMHEIGHT?')
+        if response and '!TRIMHEIGHT(' in response:
+            level = response.split('(')[1].split(')')[0]
+            return int(level)
+        return None
+
+    async def set_height(self, level: int):
+        return await self._client._send_command(f'!TRIMHEIGHT({level})')
+
+    async def height_up(self):
+        return await self._client._send_command('!TRIMHEIGHT+')
+
+    async def height_down(self):
+        return await self._client._send_command('!TRIMHEIGHT-')
 
 
 class AsyncDeviceControl(DeviceControl):

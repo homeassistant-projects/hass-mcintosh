@@ -23,6 +23,11 @@ Control your McIntosh MX160, MX170, or MX180 audio/video processor from Home Ass
 - Full media player control (power, volume, mute, source selection)
 - Support for all 26 source inputs (HDMI, SPDIF, USB, Analog, Balanced, Phono)
 - Custom source naming via UI configuration
+- Advanced audio controls:
+  - Bass and treble trim (-12dB to +12dB)
+  - Loudness on/off switch
+  - Lipsync delay adjustment
+  - Channel trim controls (center, LFE, surrounds, height)
 - Zone 2 support (via pymcintosh library)
 - RS232 serial and IP/socket connection support
 - Config flow UI for easy setup
@@ -71,13 +76,21 @@ You can customize source names through the **Options** menu after setup.
 
 ## Supported Controls
 
-| Feature | Main Zone | Zone 2 |
-|---------|-----------|--------|
-| Power On/Off | ✅ | ✅ (via library) |
-| Volume Control | ✅ | ✅ (via library) |
-| Mute | ✅ | ✅ (via library) |
-| Source Selection | ✅ | ✅ (via library) |
-| Volume Range | 0-99 | 0-99 |
+| Feature | Main Zone | Zone 2 | Entity Type |
+|---------|-----------|--------|-------------|
+| Power On/Off | ✅ | ✅ (via library) | media_player |
+| Volume Control | ✅ | ✅ (via library) | media_player |
+| Mute | ✅ | ✅ (via library) | media_player |
+| Source Selection | ✅ | ✅ (via library) | media_player |
+| Bass Trim | ✅ | N/A | number |
+| Treble Trim | ✅ | N/A | number |
+| Loudness | ✅ | N/A | switch |
+| Lipsync Delay | ✅ | N/A | number |
+| Center Channel Trim | ✅ | N/A | number |
+| LFE Channel Trim | ✅ | N/A | number |
+| Surround Channels Trim | ✅ | N/A | number |
+| Height Channels Trim | ✅ | N/A | number |
+| Volume Range | 0-99 | 0-99 | - |
 
 **Note:** Zone 2 controls are available through the pymcintosh library but not yet exposed in the HA UI.
 

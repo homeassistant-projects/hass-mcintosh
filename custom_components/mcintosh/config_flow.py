@@ -19,7 +19,7 @@ from pymcintosh import async_get_mcintosh
 from pymcintosh.models import SUPPORTED_MODELS, get_model_config
 
 from .utils import get_connection_overrides
-from .const import CONF_BAUD_RATE, CONF_MODEL, DEFAULT_URL, DOMAIN, COMPATIBLE_MODELS
+from .const import CONF_BAUD_RATE, CONF_MODEL, CONF_SOURCES, DEFAULT_URL, DOMAIN, COMPATIBLE_MODELS
 
 LOG = logging.getLogger(__name__)
 

@@ -11,10 +11,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from pyavcontrol import DeviceClient
-from pyavcontrol.helper import construct_async_client
 
-from .const import CONF_MODEL, CONF_URL, DOMAIN  # CONF_BAUD_RATE
+from pymcintosh import async_get_mcintosh, McIntoshAsync
+
+from .const import CONF_MODEL, CONF_URL, DOMAIN
 from .utils import get_connection_overrides
 
 LOG = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ PLATFORMS = [Platform.MEDIA_PLAYER]
 
 @dataclass
 class DeviceClientDetails:
-    client: DeviceClient
+    client: McIntoshAsync
     config: Mapping[str, Any]
 
 
@@ -35,8 +35,8 @@ async def connect_to_device(hass: HomeAssistant, entry: ConfigEntry):
 
     try:
         # connect to the device to confirm everything works
-        client = await construct_async_client(
-            model_id, url, hass.loop, connection_config=get_connection_overrides(config)
+        client = await async_get_mcintosh(
+            model_id, url, hass.loop, **get_connection_overrides(config)
         )
     except Exception as e:
         raise ConfigEntryNotReady(f'Connection failed to {model_id} @ {url}') from e
@@ -53,12 +53,12 @@ async def config_update_listener(hass: HomeAssistant, config_entry: ConfigEntry)
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Set up from a config entry."""
-    # assert config_entry.unique_id  # FIXME
+    assert config_entry.unique_id, 'Config entry must have a unique_id set'
     hass.data.setdefault(DOMAIN, {})
 
     await connect_to_device(hass, config_entry)
 
-    # FIXME: whenever config options are changed by user, callback config_update_lister
+    # register listener to handle config options changes
     config_entry.async_on_unload(
         config_entry.add_update_listener(config_update_listener)
     )

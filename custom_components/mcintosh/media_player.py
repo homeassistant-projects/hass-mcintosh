@@ -3,6 +3,8 @@
 import logging
 from typing import Final
 
+from pymcintosh.models import get_model_config, SOURCES
+
 from homeassistant import core
 from homeassistant.components.media_player import (
     MediaPlayerDeviceClass,
@@ -23,7 +25,7 @@ from .const import CONF_MODEL, CONF_SOURCES, DOMAIN
 LOG = logging.getLogger(__name__)
 
 MINUTES: Final = 60
-MAX_VOLUME = 100  # FIXME
+MAX_VOLUME = 99  # McIntosh volume range is 0-99
 
 
 async def async_setup_entry(
@@ -74,57 +76,39 @@ class McIntoshMediaPlayer(MediaPlayerEntity):
         self._config_entry = config_entry
         self._details = details
         self._client = details.client
-
-        # self._attr_name = config_entry.data[CONF_NAME]
         self._model_id = config_entry.data[CONF_MODEL]
 
-        self._attr_unique_id = (
-            f'{DOMAIN}_{self._model_id}_{self._client}'.lower().replace(' ', '_')
-        )
+        # get model configuration
+        self._model_config = get_model_config(self._model_id)
 
-        # name for this device should be manufacturer + the top most supported model as default
-        device_model = self._client.model()
-        manufacturer = (device_model.info.get('manufacturer', 'McIntosh'),)
-        if supported_model_names := device_model.get('models', []):
-            model_name = supported_model_names[0]
+        self._attr_unique_id = f'{DOMAIN}_{self._model_id}'.lower().replace(' ', '_')
 
-            # if multiple model names are supported by this client, include them in the attributes
-            # for this media player as a UI convenience for users
-            if len(supported_model_names) > 1:
-                self._attr_supported_models['supported_models'] = (
-                    supported_model_names  # FIXME
-                )
-        else:
-            model_name = 'Media Player'
+        # device information
+        manufacturer = 'McIntosh'
+        model_name = self._model_config['name']
 
-        # sources = _get_sources(config_entry)
-
-        # NOTE: This currently only supports the MAIN zone for media devices, but in future
-        # may want to add support for additional zones:
-        # zones = ['Main']
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._attr_unique_id)},
             manufacturer=manufacturer,
-            model='{model_name}',
-            name=f'{manufacturer} {model_name}',  # entity name
+            model=model_name,
+            name=f'{manufacturer} {model_name}',
             sw_version='Unknown',
         )
 
-        # self._attr_source_list = sources
-
-        # FIXME: if additional models supported, update the
-
-        # _attr_supported_features = XXX # FIXME: dynamically set features based on client features
-
-        self._update_attr()
-
-    @callback
-    def _update_attr(self, client):
-        # self._attr_extra_state_attributes = {
-        #    "trigger1": client.trigger_status(trigger=1),
-        #    "trigger2": client.trigger_status(trigger=2),
-        # }
-        pass
+        # setup source list from config or use default SOURCES
+        if CONF_SOURCES in config_entry.data:
+            source_id_name, source_name_id, source_names = _get_sources(config_entry)
+            self._source_id_to_name = source_id_name
+            self._source_name_to_id = source_name_id
+            self._attr_source_list = source_names
+        else:
+            # use default sources from pymcintosh
+            self._source_id_to_name = SOURCES
+            self._source_name_to_id = {v: k for k, v in SOURCES.items()}
+            self._attr_source_list = sorted(
+                self._source_name_to_id.keys(),
+                key=lambda v: self._source_name_to_id[v]
+            )
 
     async def async_added_to_hass(self) -> None:
         """Turn on the dispatchers."""
@@ -132,110 +116,93 @@ class McIntoshMediaPlayer(MediaPlayerEntity):
 
     async def _initialize(self) -> None:
         """Initialize connection dependent variables."""
-        # self._software_status = await self._client.get_softwareupdate_status()
-        LOG.debug('Connected to %s / %s', self._model_id, self._unique_id)
-
-        await self._update_current_state()
-        # await self._update_sources()
-
-    async def _update_current_state(self) -> None:
-        """Get current state of the device"""
-        # FIXME: load all the various data from the client and populate state/attributes
-
-        self._sources = []
-        # HASS won't necessarily be running the first time this method is run
-        if self.hass.is_running:
-            self.async_write_ha_state()
-
-    async def _update_sources(self) -> None:
-        """Get sources for the specific product."""
-
-        self._sources = []
-
-        sources = {}  # FIXME
-        self._source_id_to_name = sources  # [source_id]   -> source name
-        self._source_name_to_id = {
-            v: k for k, v in sources.items()
-        }  # [source name] -> source_id
-
-        # sort list of source names
-        self._source_names = sorted(
-            self._source_name_to_id.keys(), key=lambda v: self._source_name_to_id[v]
-        )
-        # TODO: Ideally the source order could be overridden in YAML config (e.g. TV should appear first on list).
-        #       Optionally, we could just sort based on the zone number, and let the user physically wire in the
-        #       order they want (doesn't work for pre-amp out channel 7/8 on some McIntosh)
-
-        # HASS won't necessarily be running the first time this method is run
-        if self.hass.is_running:
-            self.async_write_ha_state()
+        LOG.debug(f'Connected to {self._model_id} / {self._unique_id}')
+        await self.async_update()
 
     async def async_update(self):
         """Retrieve the latest state."""
-        LOG.debug('Updating %s', self.unique_id)
+        LOG.debug(f'Updating {self.unique_id}')
 
-        # poll the client for latest state for the device
         try:
-            # FIXME: how to get current state?
-            state = await self._client.get_status(self._zone_id)
-        except Exception as e:
-            LOG.warning(f'Could not update {self.unique_id}', e)
-            return
-        finally:
-            if not state:
+            # get power state
+            power = await self._client.power.get()
+            if power is None:
+                LOG.warning(f'Could not get power state for {self.unique_id}')
                 return
 
-        # FIXME
-        self._attr_state = MediaPlayerState.ON if state.power else MediaPlayerState.OFF
-        self._attr_volume_level = state.volume / MAX_VOLUME
-        # self._attr_is_volume_muted = state.mute
-        # idx = state.source
-        # self._attr_source = self._source_id_name.get(idx)
+            self._attr_state = MediaPlayerState.ON if power else MediaPlayerState.OFF
+
+            # only query other state if device is on
+            if power:
+                # get volume
+                volume = await self._client.volume.get()
+                if volume is not None:
+                    self._attr_volume_level = volume / MAX_VOLUME
+
+                # get mute state
+                mute = await self._client.mute.get()
+                if mute is not None:
+                    self._attr_is_volume_muted = mute
+
+                # get current source
+                source_info = await self._client.source.get()
+                if source_info:
+                    source_id = source_info.get('source')
+                    self._attr_source = self._source_id_to_name.get(source_id)
+
+        except Exception as e:
+            LOG.exception(f'Could not update {self.unique_id}: {e}')
 
     async def async_select_source(self, source):
+        """Select input source."""
         if source not in self._source_name_to_id:
             LOG.warning(
-                f"Selected source '{source}' not valid for {self._name}, ignoring! Sources: {self._source_name_to_id}"
+                f"Selected source '{source}' not valid for {self.unique_id}, ignoring! Sources: {self._source_name_to_id}"
             )
             return
 
-        await self._client.source.set(source)
+        source_id = self._source_name_to_id[source]
+        await self._client.source.set(source_id)
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     async def async_turn_on(self):
+        """Turn the media player on."""
         await self._client.power.on()
-
-        # schedule a poll of the status of the zone ASAP to pickup volume levels/etc
         self.async_schedule_update_ha_state(force_refresh=True)
 
     async def async_turn_off(self):
+        """Turn the media player off."""
         await self._client.power.off()
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     async def async_mute_volume(self, mute):
         """Mute (true) or unmute (false) media player."""
-        await self._client.mute.on()
+        if mute:
+            await self._client.mute.on()
+        else:
+            await self._client.mute.off()
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     async def async_set_volume_level(self, volume):
-        """Set volume level, range 0—1.0"""
-        # FIXME: translate to McIntosh...how to get max volume?
+        """Set volume level, range 0-1.0"""
         scaled_volume = int(volume * MAX_VOLUME)
         LOG.debug(f'Setting volume to {scaled_volume} (HA volume {volume})')
-        await self._client.volume.set(volume=scaled_volume)
+        await self._client.volume.set(scaled_volume)
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     async def async_volume_up(self):
+        """Volume up the media player."""
         await self._client.volume.up()
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     async def async_volume_down(self):
+        """Volume down the media player."""
         await self._client.volume.down()
-
-    @property
-    def volume_level(self) -> float | None:
-        """Volume level of the media player (0..1)."""
-        # if self._volume.level and self._volume.level.level:
-        #    return float(self._volume.level.level / 100)
-        return None
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     @property
     def icon(self) -> str | None:
+        """Return the icon to use in the frontend."""
         if self.state is MediaPlayerState.OFF or self.is_volume_muted:
             return 'mdi:speaker-off'
         return 'mdi:speaker'

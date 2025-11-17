@@ -46,21 +46,14 @@ ake sure that [Home Assistant Community Store (HACS)](https://github.com/custom-
 
 ### Step 2: Configuration
 
-This integration is completely configured via config flow.
+This integration uses **Config Flow** for setup - no YAML configuration needed!
 
-#### Example OLD-STYLE configuration.yaml:
+1. Go to **Settings** → **Devices & Services**
+2. Click **+ Add Integration**
+3. Search for **McIntosh**
+4. Follow the setup wizard to configure your processor
 
-```yaml
-media_player:
-  - platform: mcintosh
-    model: mx160
-    url: /dev/ttyUSB0
-    sources:
-      1:
-        name: "Sonos"
-      5:
-        name: "FireTV"
-```
+You can customize source names through the **Options** menu after setup.
 
 ## Hardware Requirements
 

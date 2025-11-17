@@ -1,8 +1,7 @@
 # McIntosh A/V Control for Home Assistant
 
-![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
-![release_badge](https://img.shields.io/github/v/release/rsnodgrass/hass-mcintosh.svg)
-![release_date](https://img.shields.io/github/release-date/rsnodgrass/hass-mcintosh.svg)
+![release_badge](https://img.shields.io/github/v/release/homeassistant-community/hass-mcintosh.svg)
+![release_date](https://img.shields.io/github/release-date/homeassistant-community/hass-mcintosh.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/MIT)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 
@@ -11,13 +10,13 @@
 [![Support on Patreon][patreon-shield]][patreon]
 
 
-![McIntosh Logo](https://raw.githubusercontent.com/rsnodgrass/hass-mcintosh/main/brands/logo.png)
+![McIntosh Logo](https://raw.githubusercontent.com/homeassistant-community/hass-mcintosh/main/brands/logo.png)
 
 Control your McIntosh MX160, MX170, or MX180 audio/video processor from Home Assistant via RS232 or IP connection.
 
 ## Status
 
-**Ready for testing!** The integration is feature-complete and ready for hardware testing. If you have an MX160, MX170, or MX180, please test and report any issues.
+**Implementation Complete!** This integration is fully implemented with config flow UI, source customization, and all basic media player controls. Ready for hardware testing with McIntosh MX160, MX170, or MX180 processors.
 
 ## Features
 

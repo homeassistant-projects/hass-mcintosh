@@ -12,7 +12,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
-from pymcintosh import async_get_mcintosh, McIntoshAsync
+from .pymcintosh import async_get_mcintosh, McIntoshAsync
 
 from .const import CONF_MODEL, CONF_URL, DOMAIN
 from .utils import get_connection_overrides

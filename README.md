@@ -117,18 +117,14 @@ All 26 McIntosh source inputs are supported:
 
 ## Technical Details
 
-This integration uses the embedded `pymcintosh` Python library for communication with McIntosh processors. The library implements the McIntosh RS232/IP protocol with:
+This integration uses an embedded Python library (`pymcintosh`) for communication with McIntosh processors. The library implements the McIntosh RS232/IP protocol with:
 
 - Async/await support for Home Assistant
 - Command throttling to prevent device overload
 - Proper error handling and recovery
 - Model-specific configurations (MX160/MX170/MX180)
 
-## See Also
-
-* [pymcintosh library](pymcintosh/) - Standalone Python library for McIntosh control
-* [RS232 Protocol Documentation](pymcintosh/models.py) - Command reference
-* [Example Usage](pymcintosh/example-async.py) - Python library examples
+The library is embedded within `custom_components/mcintosh/pymcintosh/` and is automatically installed with the integration.
 
 
 

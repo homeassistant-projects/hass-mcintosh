@@ -15,8 +15,8 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import selector
 
-from pymcintosh import async_get_mcintosh
-from pymcintosh.models import SUPPORTED_MODELS, get_model_config
+from .pymcintosh import async_get_mcintosh
+from .pymcintosh.models import SUPPORTED_MODELS, get_model_config
 
 from .utils import get_connection_overrides
 from .const import CONF_BAUD_RATE, CONF_MODEL, CONF_SOURCES, DEFAULT_URL, DOMAIN, COMPATIBLE_MODELS
@@ -181,8 +181,8 @@ class McIntoshOptionsFlow(OptionsFlow):
             CONF_SOURCES, self._config_entry.data.get(CONF_SOURCES, {})
         )
 
-        # import SOURCES from pymcintosh for default names
-        from pymcintosh.models import SOURCES
+        # import SOURCES for default names
+        from .pymcintosh.models import SOURCES
 
         # build schema with commonly used sources (HDMI 1-8, first few digital/analog)
         # users can customize the ones they use

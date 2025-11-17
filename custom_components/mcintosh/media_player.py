@@ -3,7 +3,7 @@
 import logging
 from typing import Final
 
-from pymcintosh.models import get_model_config, SOURCES
+from .pymcintosh.models import get_model_config, SOURCES
 
 from homeassistant import core
 from homeassistant.components.media_player import (

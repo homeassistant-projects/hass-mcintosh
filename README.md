@@ -10,7 +10,7 @@
 [![Support on Patreon][patreon-shield]][patreon]
 
 
-![McIntosh Logo](https://raw.githubusercontent.com/homeassistant-community/hass-mcintosh/main/brands/logo.png)
+![McIntosh Logo](https://github.com/homeassistant-projects/hass-mcintosh/blob/main/brands/logo.png?raw=true)
 
 Control your McIntosh MX160, MX170, or MX180 audio/video processor from Home Assistant via RS232 or IP connection.
 

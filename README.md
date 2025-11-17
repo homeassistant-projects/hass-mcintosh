@@ -54,7 +54,7 @@ This integration is completely configured via config flow.
 ```yaml
 media_player:
   - platform: mcintosh
-    model: mcintosh_mx160
+    model: mx160
     url: /dev/ttyUSB0
     sources:
       1:

@@ -1,6 +1,6 @@
 {
     "domain": "mcintosh",
-    "name": "McIntosh Audio",
+    "name": "McIntosh A/V Control",
     "codeowners": ["@rsnodgrass"],
     "config_flow": true,
     "documentation": "https://github.com/rsnodgrass/hass-mcintosh",

@@ -1,0 +1,28 @@
+[build-system]
+requires = ['setuptools>=45', 'wheel', 'setuptools_scm[toml]>=6.2']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'pymcintosh'
+version = '0.1.0'
+description = 'Python library for controlling McIntosh MX160/MX170/MX180 processors'
+readme = 'README.md'
+requires-python = '>=3.10'
+license = {text = 'Apache-2.0'}
+authors = [
+    {name = 'Ryan Snodgrass'}
+]
+dependencies = [
+    'pyserial>=3.5',
+    'pyserial-asyncio>=0.6',
+]
+
+[project.urls]
+Homepage = 'https://github.com/rsnodgrass/hass-mcintosh'
+Repository = 'https://github.com/rsnodgrass/hass-mcintosh'
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = 'single'

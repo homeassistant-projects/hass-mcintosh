@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "McIntosh A/V 处理器设置",
+        "description": "配置您的 McIntosh MX160、MX170 或 MX180 处理器",
+        "data": {
+          "model_id": "型号",
+          "url": "连接（串口或 socket://IP:端口）",
+          "baudrate": "波特率（可选）"
+        },
+        "data_description": {
+          "model_id": "选择您的 McIntosh 处理器型号",
+          "url": "串口（例如 /dev/ttyUSB0）或网络地址（例如 socket://192.168.1.100:84）",
+          "baudrate": "串口波特率（默认：115200）"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到设备。请检查您的连接设置并确保设备已开机。",
+      "unsupported": "不支持此设备型号。支持的型号：MX160、MX170、MX180。"
+    },
+    "abort": {
+      "already_configured": "此设备已配置。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "McIntosh 配置选项",
+        "description": "配置连接和音源设置",
+        "menu_options": {
+          "connection": "连接设置",
+          "sources": "音源名称"
+        }
+      },
+      "connection": {
+        "title": "连接设置",
+        "description": "修改 McIntosh 处理器的连接参数",
+        "data": {
+          "url": "连接（串口或 socket://IP:端口）",
+          "baudrate": "波特率（可选）"
+        },
+        "data_description": {
+          "url": "串口（例如 /dev/ttyUSB0）或网络地址（例如 socket://192.168.1.100:84）",
+          "baudrate": "串口波特率（默认：115200）"
+        }
+      },
+      "sources": {
+        "title": "音源名称",
+        "description": "为您的音源配置自定义名称。留空使用默认值。",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USB 音频",
+          "source_18": "模拟 1",
+          "source_24": "唱机"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "响度"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "低音调整"
+      },
+      "treble_trim": {
+        "name": "高音调整"
+      },
+      "lipsync_delay": {
+        "name": "唇音同步延迟"
+      },
+      "center_channel_trim": {
+        "name": "中置声道调整"
+      },
+      "lfe_channel_trim": {
+        "name": "LFE 声道调整"
+      },
+      "surround_channels_trim": {
+        "name": "环绕声道调整"
+      },
+      "height_channels_trim": {
+        "name": "高度声道调整"
+      }
+    }
+  }
+}

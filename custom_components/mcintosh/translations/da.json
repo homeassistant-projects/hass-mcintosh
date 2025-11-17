@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "McIntosh A/V-processor opsætning",
+        "description": "Konfigurer din McIntosh MX160, MX170 eller MX180 processor",
+        "data": {
+          "model_id": "Model",
+          "url": "Forbindelse (seriel port eller socket://IP:port)",
+          "baudrate": "Baudhastighed (valgfrit)"
+        },
+        "data_description": {
+          "model_id": "Vælg din McIntosh processor model",
+          "url": "Seriel port (f.eks. /dev/ttyUSB0) eller netværksadresse (f.eks. socket://192.168.1.100:84)",
+          "baudrate": "Seriel baudhastighed (standard: 115200)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke oprette forbindelse til enheden. Kontroller dine forbindelsesindstillinger og sørg for, at enheden er tændt.",
+      "unsupported": "Denne enhedsmodel understøttes ikke. Understøttede modeller: MX160, MX170, MX180."
+    },
+    "abort": {
+      "already_configured": "Denne enhed er allerede konfigureret."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "McIntosh konfigureringsmuligheder",
+        "description": "Konfigurer forbindelse og kildeindstillinger",
+        "menu_options": {
+          "connection": "Forbindelsesindstillinger",
+          "sources": "Kildenavne"
+        }
+      },
+      "connection": {
+        "title": "Forbindelsesindstillinger",
+        "description": "Rediger forbindelsesparametre for din McIntosh processor",
+        "data": {
+          "url": "Forbindelse (seriel port eller socket://IP:port)",
+          "baudrate": "Baudhastighed (valgfrit)"
+        },
+        "data_description": {
+          "url": "Seriel port (f.eks. /dev/ttyUSB0) eller netværksadresse (f.eks. socket://192.168.1.100:84)",
+          "baudrate": "Seriel baudhastighed (standard: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Kildenavne",
+        "description": "Konfigurer brugerdefinerede navne til dine kilder. Efterlad tom for at bruge standardværdier.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USB-lyd",
+          "source_18": "Analog 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Basjustering"
+      },
+      "treble_trim": {
+        "name": "Diskantjustering"
+      },
+      "lipsync_delay": {
+        "name": "Læbesynkroniseringsforsinkelse"
+      },
+      "center_channel_trim": {
+        "name": "Centerkanaljustering"
+      },
+      "lfe_channel_trim": {
+        "name": "LFE-kanaljustering"
+      },
+      "surround_channels_trim": {
+        "name": "Surroundkanaler justering"
+      },
+      "height_channels_trim": {
+        "name": "Højdekanaler justering"
+      }
+    }
+  }
+}

@@ -2,21 +2,97 @@
   "config": {
     "step": {
       "user": {
-        "title": "McIntosh",
-        "description": "Richten Sie McIntosh-Geräte und Kommunikationseinstellungen ein",
+        "title": "McIntosh A/V Prozessor Einrichtung",
+        "description": "Konfigurieren Sie Ihren McIntosh MX160, MX170 oder MX180 Prozessor",
         "data": {
-          "model_id": "Modell einer McIntosh-Ausrüstung",
-          "url": "URL im pyserial stil für den lokalen TTY-pfad oder socket für den remote-host:port",
-          "baud": "[Optional] Standard-Baudrate des Geräts überschreiben (nur für lokal angeschlossenen TTY-Pfad)"
+          "model_id": "Modell",
+          "url": "Verbindung (serieller Port oder socket://IP:Port)",
+          "baudrate": "Baudrate (optional)"
+        },
+        "data_description": {
+          "model_id": "Wählen Sie Ihr McIntosh Prozessor-Modell",
+          "url": "Serieller Port (z.B. /dev/ttyUSB0) oder Netzwerkadresse (z.B. socket://192.168.1.100:84)",
+          "baudrate": "Serielle Baudrate (Standard: 115200)"
         }
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "cannot_connect": "Verbindung zum Gerät fehlgeschlagen. Bitte überprüfen Sie Ihre Verbindungseinstellungen und stellen Sie sicher, dass das Gerät eingeschaltet ist.",
+      "unsupported": "Dieses Gerätemodell wird nicht unterstützt. Unterstützte Modelle: MX160, MX170, MX180."
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+      "already_configured": "Dieses Gerät ist bereits konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "McIntosh Konfigurationsoptionen",
+        "description": "Verbindungs- und Quelleneinstellungen konfigurieren",
+        "menu_options": {
+          "connection": "Verbindungseinstellungen",
+          "sources": "Quellennamen"
+        }
+      },
+      "connection": {
+        "title": "Verbindungseinstellungen",
+        "description": "Verbindungsparameter für Ihren McIntosh Prozessor ändern",
+        "data": {
+          "url": "Verbindung (serieller Port oder socket://IP:Port)",
+          "baudrate": "Baudrate (optional)"
+        },
+        "data_description": {
+          "url": "Serieller Port (z.B. /dev/ttyUSB0) oder Netzwerkadresse (z.B. socket://192.168.1.100:84)",
+          "baudrate": "Serielle Baudrate (Standard: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Quellennamen",
+        "description": "Benutzerdefinierte Namen für Ihre Quellen konfigurieren. Leer lassen für Standardwerte.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USB Audio",
+          "source_18": "Analog 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Bass-Einstellung"
+      },
+      "treble_trim": {
+        "name": "Höhen-Einstellung"
+      },
+      "lipsync_delay": {
+        "name": "Lipsync-Verzögerung"
+      },
+      "center_channel_trim": {
+        "name": "Center-Kanal Einstellung"
+      },
+      "lfe_channel_trim": {
+        "name": "LFE-Kanal Einstellung"
+      },
+      "surround_channels_trim": {
+        "name": "Surround-Kanäle Einstellung"
+      },
+      "height_channels_trim": {
+        "name": "Höhen-Kanäle Einstellung"
+      }
     }
   }
 }

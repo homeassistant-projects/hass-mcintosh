@@ -1,0 +1,98 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuración del procesador A/V McIntosh",
+        "description": "Configure su procesador McIntosh MX160, MX170 o MX180",
+        "data": {
+          "model_id": "Modelo",
+          "url": "Conexión (puerto serie o socket://IP:puerto)",
+          "baudrate": "Velocidad en baudios (opcional)"
+        },
+        "data_description": {
+          "model_id": "Seleccione su modelo de procesador McIntosh",
+          "url": "Puerto serie (ej. /dev/ttyUSB0) o dirección de red (ej. socket://192.168.1.100:84)",
+          "baudrate": "Velocidad en baudios serie (predeterminado: 115200)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Error al conectar con el dispositivo. Verifique la configuración de conexión y asegúrese de que el dispositivo esté encendido.",
+      "unsupported": "Este modelo de dispositivo no es compatible. Modelos compatibles: MX160, MX170, MX180."
+    },
+    "abort": {
+      "already_configured": "Este dispositivo ya está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones de configuración McIntosh",
+        "description": "Configurar ajustes de conexión y fuentes",
+        "menu_options": {
+          "connection": "Ajustes de conexión",
+          "sources": "Nombres de fuentes"
+        }
+      },
+      "connection": {
+        "title": "Ajustes de conexión",
+        "description": "Modificar los parámetros de conexión de su procesador McIntosh",
+        "data": {
+          "url": "Conexión (puerto serie o socket://IP:puerto)",
+          "baudrate": "Velocidad en baudios (opcional)"
+        },
+        "data_description": {
+          "url": "Puerto serie (ej. /dev/ttyUSB0) o dirección de red (ej. socket://192.168.1.100:84)",
+          "baudrate": "Velocidad en baudios serie (predeterminado: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Nombres de fuentes",
+        "description": "Configure nombres personalizados para sus fuentes. Deje en blanco para usar valores predeterminados.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USB Audio",
+          "source_18": "Analógico 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Ajuste de graves"
+      },
+      "treble_trim": {
+        "name": "Ajuste de agudos"
+      },
+      "lipsync_delay": {
+        "name": "Retraso de sincronización labial"
+      },
+      "center_channel_trim": {
+        "name": "Ajuste canal central"
+      },
+      "lfe_channel_trim": {
+        "name": "Ajuste canal LFE"
+      },
+      "surround_channels_trim": {
+        "name": "Ajuste canales surround"
+      },
+      "height_channels_trim": {
+        "name": "Ajuste canales de altura"
+      }
+    }
+  }
+}

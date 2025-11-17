@@ -2,21 +2,97 @@
   "config": {
     "step": {
       "user": {
-        "title": "McIntosh",
-        "description": "Setup McIntosh equipment and communication settings",
+        "title": "McIntosh A/V Processor Setup",
+        "description": "Configure your McIntosh MX160, MX170, or MX180 processor",
         "data": {
-          "model_id": "Model of McIntosh equipment",
-          "url": "URL in pyserial-style for local tty path or socket for remote host:port",
-          "baud": "[Optional] Override equipment's default baud rate (only for locally attached tty path)"
+          "model_id": "Model",
+          "url": "Connection (serial port or socket://IP:port)",
+          "baudrate": "Baud Rate (optional)"
+        },
+        "data_description": {
+          "model_id": "Select your McIntosh processor model",
+          "url": "Serial port (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
+          "baudrate": "Serial baud rate (default: 115200)"
         }
       }
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "cannot_connect": "Failed to connect to the device. Please check your connection settings and ensure the device is powered on.",
+      "unsupported": "This device model is not supported. Supported models: MX160, MX170, MX180."
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+      "already_configured": "This device is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "McIntosh Configuration Options",
+        "description": "Configure connection and source settings",
+        "menu_options": {
+          "connection": "Connection Settings",
+          "sources": "Source Names"
+        }
+      },
+      "connection": {
+        "title": "Connection Settings",
+        "description": "Modify connection parameters for your McIntosh processor",
+        "data": {
+          "url": "Connection (serial port or socket://IP:port)",
+          "baudrate": "Baud Rate (optional)"
+        },
+        "data_description": {
+          "url": "Serial port (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
+          "baudrate": "Serial baud rate (default: 115200)"
+        }
+      },
+      "sources": {
+        "title": "Source Names",
+        "description": "Configure custom names for your sources. Leave blank to use defaults.",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8",
+          "source_17": "USB Audio",
+          "source_18": "Analog 1",
+          "source_24": "Phono"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "loudness": {
+        "name": "Loudness"
+      }
+    },
+    "number": {
+      "bass_trim": {
+        "name": "Bass Trim"
+      },
+      "treble_trim": {
+        "name": "Treble Trim"
+      },
+      "lipsync_delay": {
+        "name": "Lipsync Delay"
+      },
+      "center_channel_trim": {
+        "name": "Center Channel Trim"
+      },
+      "lfe_channel_trim": {
+        "name": "LFE Channel Trim"
+      },
+      "surround_channels_trim": {
+        "name": "Surround Channels Trim"
+      },
+      "height_channels_trim": {
+        "name": "Height Channels Trim"
+      }
     }
   }
 }

@@ -1,21 +1,16 @@
-[tool.isort]
-force_to_top = [ "logging" ]
-balanced_wrapping = true
+[project]
+name = "hass-mcintosh"
+requires-python = ">=3.13"
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 indent-width = 4
-lint.ignore = [
-       "F405"  # * imports
+target-version = "py313"
+
+[tool.ruff.lint]
+ignore = [
+    "F405",  # * imports
 ]
 
 [tool.ruff.format]
-quote-style = "single" # Use a single quote instead of double
-
-[tool.pycln]
-all = true
-
-[tool.refurb]
-python_version = "3.11"
-quiet = true
-ignore = [ "FURB184" ]
+quote-style = "single"

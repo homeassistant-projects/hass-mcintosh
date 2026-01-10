@@ -1,19 +1,111 @@
-"""Home Assistant McIntosh Number Platform"""
+"""McIntosh Number platform."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
 import logging
-from typing import Optional
+from typing import Final
 
-from homeassistant.components.number import NumberEntity, NumberMode
+from homeassistant.components.number import NumberEntity, NumberEntityDescription, NumberMode
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import DeviceClientDetails
 from .const import CONF_MODEL, DOMAIN
+from .coordinator import McIntoshCoordinator
 from .pymcintosh.models import get_model_config
 
 LOG = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True, kw_only=True)
+class McIntoshNumberEntityDescription(NumberEntityDescription):
+    """Describes McIntosh number entity."""
+
+    data_key: str
+
+
+TRIM_NUMBERS: Final[tuple[McIntoshNumberEntityDescription, ...]] = (
+    McIntoshNumberEntityDescription(
+        key='bass_trim',
+        translation_key='bass_trim',
+        native_min_value=-120,
+        native_max_value=120,
+        native_step=10,
+        native_unit_of_measurement='x0.1dB',
+        mode=NumberMode.SLIDER,
+        icon='mdi:music-clef-bass',
+        data_key='bass_trim',
+    ),
+    McIntoshNumberEntityDescription(
+        key='treble_trim',
+        translation_key='treble_trim',
+        native_min_value=-120,
+        native_max_value=120,
+        native_step=10,
+        native_unit_of_measurement='x0.1dB',
+        mode=NumberMode.SLIDER,
+        icon='mdi:music-clef-treble',
+        data_key='treble_trim',
+    ),
+    McIntoshNumberEntityDescription(
+        key='lipsync_delay',
+        translation_key='lipsync_delay',
+        native_min_value=0,
+        native_max_value=100,
+        native_step=1,
+        native_unit_of_measurement='ms',
+        mode=NumberMode.BOX,
+        icon='mdi:timer-outline',
+        data_key='lipsync_delay',
+    ),
+    McIntoshNumberEntityDescription(
+        key='center_trim',
+        translation_key='center_channel_trim',
+        native_min_value=-120,
+        native_max_value=120,
+        native_step=10,
+        native_unit_of_measurement='x0.1dB',
+        mode=NumberMode.SLIDER,
+        icon='mdi:speaker',
+        data_key='center_trim',
+    ),
+    McIntoshNumberEntityDescription(
+        key='lfe_trim',
+        translation_key='lfe_channel_trim',
+        native_min_value=-120,
+        native_max_value=120,
+        native_step=10,
+        native_unit_of_measurement='x0.1dB',
+        mode=NumberMode.SLIDER,
+        icon='mdi:waveform',
+        data_key='lfe_trim',
+    ),
+    McIntoshNumberEntityDescription(
+        key='surrounds_trim',
+        translation_key='surround_channels_trim',
+        native_min_value=-120,
+        native_max_value=120,
+        native_step=10,
+        native_unit_of_measurement='x0.1dB',
+        mode=NumberMode.SLIDER,
+        icon='mdi:surround-sound',
+        data_key='surrounds_trim',
+    ),
+    McIntoshNumberEntityDescription(
+        key='height_trim',
+        translation_key='height_channels_trim',
+        native_min_value=-120,
+        native_max_value=120,
+        native_step=10,
+        native_unit_of_measurement='x0.1dB',
+        mode=NumberMode.SLIDER,
+        icon='mdi:arrow-up-bold',
+        data_key='height_trim',
+    ),
+)
 
 
 def _get_device_info(config_entry: ConfigEntry) -> DeviceInfo:
@@ -37,303 +129,81 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    if data := hass.data[DOMAIN][config_entry.entry_id]:
-        entities = [
-            McIntoshBassNumber(config_entry, data),
-            McIntoshTrebleNumber(config_entry, data),
-            McIntoshLipsyncNumber(config_entry, data),
-            McIntoshCenterTrimNumber(config_entry, data),
-            McIntoshLFETrimNumber(config_entry, data),
-            McIntoshSurroundsTrimNumber(config_entry, data),
-            McIntoshHeightTrimNumber(config_entry, data),
-        ]
-        async_add_entities(new_entities=entities, update_before_add=True)
-    else:
-        LOG.error(
-            f'missing pre-connected client for {config_entry}, cannot create number entities'
+    """Set up McIntosh number entities from config entry."""
+    coordinator: McIntoshCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    model_id = config_entry.data[CONF_MODEL]
+    device_info = _get_device_info(config_entry)
+
+    entities: list[McIntoshNumberEntity] = [
+        McIntoshNumberEntity(
+            coordinator=coordinator,
+            description=description,
+            model_id=model_id,
+            device_info=device_info,
         )
+        for description in TRIM_NUMBERS
+    ]
+
+    async_add_entities(entities)
 
 
-class McIntoshBassNumber(NumberEntity):
+class McIntoshNumberEntity(CoordinatorEntity[McIntoshCoordinator], NumberEntity):
+    """Representation of a McIntosh number entity."""
+
     _attr_has_entity_name = True
-    _attr_native_min_value = -120
-    _attr_native_max_value = 120
-    _attr_native_step = 10
-    _attr_mode = NumberMode.SLIDER
-    _attr_icon = 'mdi:music-clef-bass'
+    entity_description: McIntoshNumberEntityDescription
 
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
+    def __init__(
+        self,
+        coordinator: McIntoshCoordinator,
+        description: McIntoshNumberEntityDescription,
+        model_id: str,
+        device_info: DeviceInfo,
+    ) -> None:
+        """Initialize the number entity."""
+        super().__init__(coordinator)
+        self.entity_description = description
+        self._model_id = model_id
 
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_bass'.lower().replace(' ', '_')
-        self._attr_name = 'Bass Trim'
-        self._attr_native_unit_of_measurement = 'x0.1dB'
-        self._attr_device_info = _get_device_info(config_entry)
+        self._attr_unique_id = f'{DOMAIN}_{model_id}_{description.key}'.lower().replace(' ', '_')
+        self._attr_device_info = device_info
 
-    async def async_added_to_hass(self) -> None:
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.bass_treble.get_bass()
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        if self.coordinator.data:
+            data = self.coordinator.data
+            value = getattr(data, self.entity_description.data_key, None)
             if value is not None:
                 self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
+
+            # update lipsync range if available
+            if self.entity_description.key == 'lipsync_delay':
+                if data.lipsync_min is not None:
+                    self._attr_native_min_value = data.lipsync_min
+                if data.lipsync_max is not None:
+                    self._attr_native_max_value = data.lipsync_max
+
+        self.async_write_ha_state()
 
     async def async_set_native_value(self, value: float) -> None:
-        """Set bass trim level."""
-        await self._client.bass_treble.set_bass(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
+        """Set the value."""
+        int_value = int(value)
+        key = self.entity_description.key
 
+        if key == 'bass_trim':
+            await self.coordinator.client.bass_treble.set_bass(int_value)
+        elif key == 'treble_trim':
+            await self.coordinator.client.bass_treble.set_treble(int_value)
+        elif key == 'lipsync_delay':
+            await self.coordinator.client.lipsync.set(int_value)
+        elif key == 'center_trim':
+            await self.coordinator.client.channel_trim.set_center(int_value)
+        elif key == 'lfe_trim':
+            await self.coordinator.client.channel_trim.set_lfe(int_value)
+        elif key == 'surrounds_trim':
+            await self.coordinator.client.channel_trim.set_surrounds(int_value)
+        elif key == 'height_trim':
+            await self.coordinator.client.channel_trim.set_height(int_value)
 
-class McIntoshTrebleNumber(NumberEntity):
-    _attr_has_entity_name = True
-    _attr_native_min_value = -120
-    _attr_native_max_value = 120
-    _attr_native_step = 10
-    _attr_mode = NumberMode.SLIDER
-    _attr_icon = 'mdi:music-clef-treble'
-
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
-
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_treble'.lower().replace(' ', '_')
-        self._attr_name = 'Treble Trim'
-        self._attr_native_unit_of_measurement = 'x0.1dB'
-        self._attr_device_info = _get_device_info(config_entry)
-
-    async def async_added_to_hass(self) -> None:
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.bass_treble.get_treble()
-            if value is not None:
-                self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_set_native_value(self, value: float) -> None:
-        """Set treble trim level."""
-        await self._client.bass_treble.set_treble(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
-
-
-class McIntoshLipsyncNumber(NumberEntity):
-    _attr_has_entity_name = True
-    _attr_mode = NumberMode.BOX
-    _attr_icon = 'mdi:timer-outline'
-
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
-
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_lipsync'.lower().replace(' ', '_')
-        self._attr_name = 'Lipsync Delay'
-        self._attr_native_unit_of_measurement = 'ms'
-        self._attr_device_info = _get_device_info(config_entry)
-
-        # will be set dynamically from device
-        self._attr_native_min_value = 0
-        self._attr_native_max_value = 100
-        self._attr_native_step = 1
-
-    async def async_added_to_hass(self) -> None:
-        # query device for actual lipsync range
-        try:
-            range_info = await self._client.lipsync.get_range()
-            if range_info:
-                self._attr_native_min_value = range_info['min']
-                self._attr_native_max_value = range_info['max']
-                LOG.debug(f'lipsync range: {range_info}')
-        except Exception as e:
-            LOG.warning(f'could not get lipsync range, using defaults: {e}')
-
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.lipsync.get()
-            if value is not None:
-                self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_set_native_value(self, value: float) -> None:
-        """Set lipsync delay."""
-        await self._client.lipsync.set(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
-
-
-class McIntoshCenterTrimNumber(NumberEntity):
-    _attr_has_entity_name = True
-    _attr_native_min_value = -120
-    _attr_native_max_value = 120
-    _attr_native_step = 10
-    _attr_mode = NumberMode.SLIDER
-    _attr_icon = 'mdi:speaker'
-
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
-
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_center_trim'.lower().replace(' ', '_')
-        self._attr_name = 'Center Channel Trim'
-        self._attr_native_unit_of_measurement = 'x0.1dB'
-        self._attr_device_info = _get_device_info(config_entry)
-
-    async def async_added_to_hass(self) -> None:
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.channel_trim.get_center()
-            if value is not None:
-                self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_set_native_value(self, value: float) -> None:
-        """Set center channel trim level."""
-        await self._client.channel_trim.set_center(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
-
-
-class McIntoshLFETrimNumber(NumberEntity):
-    _attr_has_entity_name = True
-    _attr_native_min_value = -120
-    _attr_native_max_value = 120
-    _attr_native_step = 10
-    _attr_mode = NumberMode.SLIDER
-    _attr_icon = 'mdi:waveform'
-
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
-
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_lfe_trim'.lower().replace(' ', '_')
-        self._attr_name = 'LFE Channel Trim'
-        self._attr_native_unit_of_measurement = 'x0.1dB'
-        self._attr_device_info = _get_device_info(config_entry)
-
-    async def async_added_to_hass(self) -> None:
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.channel_trim.get_lfe()
-            if value is not None:
-                self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_set_native_value(self, value: float) -> None:
-        """Set LFE channel trim level."""
-        await self._client.channel_trim.set_lfe(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
-
-
-class McIntoshSurroundsTrimNumber(NumberEntity):
-    _attr_has_entity_name = True
-    _attr_native_min_value = -120
-    _attr_native_max_value = 120
-    _attr_native_step = 10
-    _attr_mode = NumberMode.SLIDER
-    _attr_icon = 'mdi:surround-sound'
-
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
-
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_surrounds_trim'.lower().replace(' ', '_')
-        self._attr_name = 'Surround Channels Trim'
-        self._attr_native_unit_of_measurement = 'x0.1dB'
-        self._attr_device_info = _get_device_info(config_entry)
-
-    async def async_added_to_hass(self) -> None:
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.channel_trim.get_surrounds()
-            if value is not None:
-                self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_set_native_value(self, value: float) -> None:
-        """Set surround channels trim level."""
-        await self._client.channel_trim.set_surrounds(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
-
-
-class McIntoshHeightTrimNumber(NumberEntity):
-    _attr_has_entity_name = True
-    _attr_native_min_value = -120
-    _attr_native_max_value = 120
-    _attr_native_step = 10
-    _attr_mode = NumberMode.SLIDER
-    _attr_icon = 'mdi:arrow-up-bold'
-
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
-        self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
-
-        model_id = config_entry.data[CONF_MODEL]
-        self._attr_unique_id = f'{DOMAIN}_{model_id}_height_trim'.lower().replace(' ', '_')
-        self._attr_name = 'Height Channels Trim'
-        self._attr_native_unit_of_measurement = 'x0.1dB'
-        self._attr_device_info = _get_device_info(config_entry)
-
-    async def async_added_to_hass(self) -> None:
-        await self.async_update()
-
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            value = await self._client.channel_trim.get_height()
-            if value is not None:
-                self._attr_native_value = value
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_set_native_value(self, value: float) -> None:
-        """Set height channels trim level."""
-        await self._client.channel_trim.set_height(int(value))
-        self.async_schedule_update_ha_state(force_refresh=True)
+        await self.coordinator.async_request_refresh()

@@ -1,11 +1,12 @@
 """Python library for controlling McIntosh MX160/MX170/MX180 processors."""
 
-import asyncio
+from __future__ import annotations
+
 import logging
-import serial
-from functools import wraps
 from threading import RLock
-from typing import Optional, Dict, Any
+from typing import Any
+
+import serial
 
 from .models import (
     get_model_config,
@@ -39,7 +40,7 @@ class PowerControl:
         """Toggle system power."""
         return self._client._send_command('!PTOGGLE')
 
-    def get(self) -> Optional[bool]:
+    def get(self) -> bool | None:
         """Get power status (True=on, False=off)."""
         response = self._client._send_command('!POWER?')
         if response and '!POWER(' in response:
@@ -60,19 +61,19 @@ class VolumeControl:
         level = max(0, min(99, level))
         return self._client._send_command(f'!VOL({level})')
 
-    def up(self, amount: Optional[int] = None):
+    def up(self, amount: int | None = None):
         """Increase volume (optionally by specific amount)."""
         if amount:
             return self._client._send_command(f'!VOL+({amount})')
         return self._client._send_command('!VOL+')
 
-    def down(self, amount: Optional[int] = None):
+    def down(self, amount: int | None = None):
         """Decrease volume (optionally by specific amount)."""
         if amount:
             return self._client._send_command(f'!VOL-({amount})')
         return self._client._send_command('!VOL-')
 
-    def get(self) -> Optional[int]:
+    def get(self) -> int | None:
         """Get current volume level."""
         response = self._client._send_command('!VOL?')
         if response and '!VOL(' in response:
@@ -80,7 +81,7 @@ class VolumeControl:
             return int(vol)
         return None
 
-    def max_vol(self) -> Optional[int]:
+    def max_vol(self) -> int | None:
         """Get maximum volume setting (MX170/MX180 only)."""
         if not self._client._model_config.get('supports_max_volume_query'):
             LOG.warning(f'{self._client._model_id} does not support max volume query')
@@ -110,7 +111,7 @@ class MuteControl:
         """Toggle mute."""
         return self._client._send_command('!MUTE')
 
-    def get(self) -> Optional[bool]:
+    def get(self) -> bool | None:
         """Get mute status (True=muted, False=unmuted)."""
         response = self._client._send_command('!MUTE?')
         if response and '!MUTE(' in response:
@@ -131,7 +132,7 @@ class SourceControl:
             LOG.warning(f'Invalid source {source}, valid range: 0-25')
         return self._client._send_command(f'!SRC({source})')
 
-    def get(self) -> Optional[Dict[str, Any]]:
+    def get(self) -> dict[str, Any | None]:
         """Get current source info."""
         response = self._client._send_command('!SRC?')
         if response and '!SRC(' in response:
@@ -150,7 +151,7 @@ class SourceControl:
         """Select previous source."""
         return self._client._send_command('!SRC-')
 
-    def info(self, source: int) -> Optional[Dict[str, Any]]:
+    def info(self, source: int) -> dict[str, Any | None]:
         """Get info for specific source."""
         response = self._client._send_command(f'!SRC({source})?')
         if response and '!SRC(' in response:
@@ -190,7 +191,7 @@ class Zone2PowerControl:
         """Toggle Zone 2 power."""
         return self._client._send_command('!ZPTOGGLE')
 
-    def get(self) -> Optional[bool]:
+    def get(self) -> bool | None:
         """Get Zone 2 power status."""
         response = self._client._send_command('!POWERZONE2?')
         if response and '!POWER(' in response:
@@ -210,19 +211,19 @@ class Zone2VolumeControl:
         level = max(0, min(99, level))
         return self._client._send_command(f'!ZVOL({level})')
 
-    def up(self, amount: Optional[int] = None):
+    def up(self, amount: int | None = None):
         """Increase Zone 2 volume."""
         if amount:
             return self._client._send_command(f'!ZVOL+({amount})')
         return self._client._send_command('!ZVOL+')
 
-    def down(self, amount: Optional[int] = None):
+    def down(self, amount: int | None = None):
         """Decrease Zone 2 volume."""
         if amount:
             return self._client._send_command(f'!ZVOL-({amount})')
         return self._client._send_command('!ZVOL-')
 
-    def get(self) -> Optional[int]:
+    def get(self) -> int | None:
         """Get Zone 2 volume level."""
         response = self._client._send_command('!ZVOL?')
         if response and '!ZVOL(' in response:
@@ -249,7 +250,7 @@ class Zone2MuteControl:
         """Toggle Zone 2 mute."""
         return self._client._send_command('!ZMUTE')
 
-    def get(self) -> Optional[bool]:
+    def get(self) -> bool | None:
         """Get Zone 2 mute status."""
         response = self._client._send_command('!ZMUTE?')
         if response and '!ZMUTE(' in response:
@@ -268,7 +269,7 @@ class Zone2SourceControl:
         """Set Zone 2 source."""
         return self._client._send_command(f'!ZSRC({source})')
 
-    def get(self) -> Optional[Dict[str, Any]]:
+    def get(self) -> dict[str, Any | None]:
         """Get Zone 2 current source."""
         response = self._client._send_command('!ZSRC?')
         if response and '!ZSRC(' in response:
@@ -293,7 +294,7 @@ class BassTrebleControl:
     def __init__(self, client):
         self._client = client
 
-    def get_bass(self) -> Optional[int]:
+    def get_bass(self) -> int | None:
         """Get bass level trim (10 = 1dB)."""
         response = self._client._send_command('!TRIMBASS?')
         if response and '!TRIMBASS(' in response:
@@ -313,7 +314,7 @@ class BassTrebleControl:
         """Decrease bass level trim."""
         return self._client._send_command('!TRIMBASS-')
 
-    def get_treble(self) -> Optional[int]:
+    def get_treble(self) -> int | None:
         """Get treble level trim (10 = 1dB, -120 to +120)."""
         response = self._client._send_command('!TRIMTREB?')
         if response and ('!TRIMTREB(' in response or '!TRIMTREBLE(' in response):
@@ -350,7 +351,7 @@ class LoudnessControl:
         """Turn loudness off."""
         return self._client._send_command('!LOUDNESS(0)')
 
-    def get(self) -> Optional[bool]:
+    def get(self) -> bool | None:
         """Get loudness status (True=on, False=off)."""
         response = self._client._send_command('!LOUDNESS?')
         if response and '!LOUDNESS(' in response:
@@ -365,7 +366,7 @@ class LipsyncControl:
     def __init__(self, client):
         self._client = client
 
-    def get(self) -> Optional[int]:
+    def get(self) -> int | None:
         """Get lipsync delay value."""
         response = self._client._send_command('!LIPSYNC?')
         if response and '!LIPSYNC(' in response:
@@ -385,7 +386,7 @@ class LipsyncControl:
         """Decrease lipsync delay."""
         return self._client._send_command('!LIPSYNC-')
 
-    def get_range(self) -> Optional[Dict[str, int]]:
+    def get_range(self) -> dict[str, int | None]:
         """Get lipsync range (min/max values)."""
         response = self._client._send_command('!LIPSYNCRANGE?')
         if response and '!LIPSYNCRANGE(' in response:
@@ -402,7 +403,7 @@ class ChannelTrimControl:
     def __init__(self, client):
         self._client = client
 
-    def get_center(self) -> Optional[int]:
+    def get_center(self) -> int | None:
         """Get center channel level trim (10 = 1dB)."""
         response = self._client._send_command('!TRIMCENTER?')
         if response and '!TRIMCENTER(' in response:
@@ -422,7 +423,7 @@ class ChannelTrimControl:
         """Decrease center channel level trim."""
         return self._client._send_command('!TRIMCENTER-')
 
-    def get_lfe(self) -> Optional[int]:
+    def get_lfe(self) -> int | None:
         """Get LFE channel level trim (10 = 1dB)."""
         response = self._client._send_command('!TRIMLFE?')
         if response and '!TRIMLFE(' in response:
@@ -442,7 +443,7 @@ class ChannelTrimControl:
         """Decrease LFE channel level trim."""
         return self._client._send_command('!TRIMLFE-')
 
-    def get_surrounds(self) -> Optional[int]:
+    def get_surrounds(self) -> int | None:
         """Get surround channels level trim (10 = 1dB)."""
         response = self._client._send_command('!TRIMSURRS?')
         if response and '!TRIMSURRS(' in response:
@@ -462,7 +463,7 @@ class ChannelTrimControl:
         """Decrease surround channels level trim."""
         return self._client._send_command('!TRIMSURRS-')
 
-    def get_height(self) -> Optional[int]:
+    def get_height(self) -> int | None:
         """Get height channels level trim (10 = 1dB)."""
         response = self._client._send_command('!TRIMHEIGHT?')
         if response and '!TRIMHEIGHT(' in response:
@@ -489,7 +490,7 @@ class DeviceControl:
     def __init__(self, client):
         self._client = client
 
-    def name(self) -> Optional[str]:
+    def name(self) -> str | None:
         """Get device name (e.g. MX160)."""
         response = self._client._send_command('!DEVICE?')
         if response and '!DEVICE(' in response:
@@ -593,7 +594,7 @@ class McIntoshSync:
         if init_cmd := self._model_config.get('connection_init'):
             self._send_command(init_cmd)
 
-    def _send_command(self, command: str) -> Optional[str]:
+    def _send_command(self, command: str) -> str | None:
         """Send command and return response."""
         with self._lock:
             # clear buffers
@@ -649,7 +650,7 @@ class McIntoshAsync:
         self.channel_trim = AsyncChannelTrimControl(self)
         self.device = AsyncDeviceControl(self)
 
-    async def _send_command(self, command: str) -> Optional[str]:
+    async def _send_command(self, command: str) -> str | None:
         """Send command and return response."""
         request = (command + COMMAND_EOL).encode('ascii')
         return await self._protocol.send(request)
@@ -666,7 +667,7 @@ class AsyncPowerControl(PowerControl):
     async def toggle(self):
         return await self._client._send_command('!PTOGGLE')
 
-    async def get(self) -> Optional[bool]:
+    async def get(self) -> bool | None:
         response = await self._client._send_command('!POWER?')
         if response and '!POWER(' in response:
             state = response.split('(')[1].split(')')[0]
@@ -679,24 +680,24 @@ class AsyncVolumeControl(VolumeControl):
         level = max(0, min(99, level))
         return await self._client._send_command(f'!VOL({level})')
 
-    async def up(self, amount: Optional[int] = None):
+    async def up(self, amount: int | None = None):
         if amount:
             return await self._client._send_command(f'!VOL+({amount})')
         return await self._client._send_command('!VOL+')
 
-    async def down(self, amount: Optional[int] = None):
+    async def down(self, amount: int | None = None):
         if amount:
             return await self._client._send_command(f'!VOL-({amount})')
         return await self._client._send_command('!VOL-')
 
-    async def get(self) -> Optional[int]:
+    async def get(self) -> int | None:
         response = await self._client._send_command('!VOL?')
         if response and '!VOL(' in response:
             vol = response.split('(')[1].split(')')[0]
             return int(vol)
         return None
 
-    async def max_vol(self) -> Optional[int]:
+    async def max_vol(self) -> int | None:
         if not self._client._model_config.get('supports_max_volume_query'):
             LOG.warning(f'{self._client._model_id} does not support max volume query')
             return None
@@ -717,7 +718,7 @@ class AsyncMuteControl(MuteControl):
     async def toggle(self):
         return await self._client._send_command('!MUTE')
 
-    async def get(self) -> Optional[bool]:
+    async def get(self) -> bool | None:
         response = await self._client._send_command('!MUTE?')
         if response and '!MUTE(' in response:
             state = response.split('(')[1].split(')')[0]
@@ -731,7 +732,7 @@ class AsyncSourceControl(SourceControl):
             LOG.warning(f'Invalid source {source}, valid range: 0-25')
         return await self._client._send_command(f'!SRC({source})')
 
-    async def get(self) -> Optional[Dict[str, Any]]:
+    async def get(self) -> dict[str, Any | None]:
         response = await self._client._send_command('!SRC?')
         if response and '!SRC(' in response:
             parts = response.split('(')[1].split(')')
@@ -746,7 +747,7 @@ class AsyncSourceControl(SourceControl):
     async def previous(self):
         return await self._client._send_command('!SRC-')
 
-    async def info(self, source: int) -> Optional[Dict[str, Any]]:
+    async def info(self, source: int) -> dict[str, Any | None]:
         response = await self._client._send_command(f'!SRC({source})?')
         if response and '!SRC(' in response:
             parts = response.split('(')[1].split(')')
@@ -777,7 +778,7 @@ class AsyncZone2PowerControl(Zone2PowerControl):
     async def toggle(self):
         return await self._client._send_command('!ZPTOGGLE')
 
-    async def get(self) -> Optional[bool]:
+    async def get(self) -> bool | None:
         response = await self._client._send_command('!POWERZONE2?')
         if response and '!POWER(' in response:
             state = response.split('(')[1].split(')')[0]
@@ -790,17 +791,17 @@ class AsyncZone2VolumeControl(Zone2VolumeControl):
         level = max(0, min(99, level))
         return await self._client._send_command(f'!ZVOL({level})')
 
-    async def up(self, amount: Optional[int] = None):
+    async def up(self, amount: int | None = None):
         if amount:
             return await self._client._send_command(f'!ZVOL+({amount})')
         return await self._client._send_command('!ZVOL+')
 
-    async def down(self, amount: Optional[int] = None):
+    async def down(self, amount: int | None = None):
         if amount:
             return await self._client._send_command(f'!ZVOL-({amount})')
         return await self._client._send_command('!ZVOL-')
 
-    async def get(self) -> Optional[int]:
+    async def get(self) -> int | None:
         response = await self._client._send_command('!ZVOL?')
         if response and '!ZVOL(' in response:
             vol = response.split('(')[1].split(')')[0]
@@ -818,7 +819,7 @@ class AsyncZone2MuteControl(Zone2MuteControl):
     async def toggle(self):
         return await self._client._send_command('!ZMUTE')
 
-    async def get(self) -> Optional[bool]:
+    async def get(self) -> bool | None:
         response = await self._client._send_command('!ZMUTE?')
         if response and '!ZMUTE(' in response:
             state = response.split('(')[1].split(')')[0]
@@ -830,7 +831,7 @@ class AsyncZone2SourceControl(Zone2SourceControl):
     async def set(self, source: int):
         return await self._client._send_command(f'!ZSRC({source})')
 
-    async def get(self) -> Optional[Dict[str, Any]]:
+    async def get(self) -> dict[str, Any | None]:
         response = await self._client._send_command('!ZSRC?')
         if response and '!ZSRC(' in response:
             parts = response.split('(')[1].split(')')
@@ -847,7 +848,7 @@ class AsyncZone2SourceControl(Zone2SourceControl):
 
 
 class AsyncBassTrebleControl(BassTrebleControl):
-    async def get_bass(self) -> Optional[int]:
+    async def get_bass(self) -> int | None:
         response = await self._client._send_command('!TRIMBASS?')
         if response and '!TRIMBASS(' in response:
             level = response.split('(')[1].split(')')[0]
@@ -863,7 +864,7 @@ class AsyncBassTrebleControl(BassTrebleControl):
     async def bass_down(self):
         return await self._client._send_command('!TRIMBASS-')
 
-    async def get_treble(self) -> Optional[int]:
+    async def get_treble(self) -> int | None:
         response = await self._client._send_command('!TRIMTREB?')
         if response and ('!TRIMTREB(' in response or '!TRIMTREBLE(' in response):
             level = response.split('(')[1].split(')')[0]
@@ -888,7 +889,7 @@ class AsyncLoudnessControl(LoudnessControl):
     async def off(self):
         return await self._client._send_command('!LOUDNESS(0)')
 
-    async def get(self) -> Optional[bool]:
+    async def get(self) -> bool | None:
         response = await self._client._send_command('!LOUDNESS?')
         if response and '!LOUDNESS(' in response:
             state = response.split('(')[1].split(')')[0]
@@ -897,7 +898,7 @@ class AsyncLoudnessControl(LoudnessControl):
 
 
 class AsyncLipsyncControl(LipsyncControl):
-    async def get(self) -> Optional[int]:
+    async def get(self) -> int | None:
         response = await self._client._send_command('!LIPSYNC?')
         if response and '!LIPSYNC(' in response:
             value = response.split('(')[1].split(')')[0]
@@ -913,7 +914,7 @@ class AsyncLipsyncControl(LipsyncControl):
     async def down(self):
         return await self._client._send_command('!LIPSYNC-')
 
-    async def get_range(self) -> Optional[Dict[str, int]]:
+    async def get_range(self) -> dict[str, int | None]:
         response = await self._client._send_command('!LIPSYNCRANGE?')
         if response and '!LIPSYNCRANGE(' in response:
             values = response.split('(')[1].split(')')[0].split(',')
@@ -923,7 +924,7 @@ class AsyncLipsyncControl(LipsyncControl):
 
 
 class AsyncChannelTrimControl(ChannelTrimControl):
-    async def get_center(self) -> Optional[int]:
+    async def get_center(self) -> int | None:
         response = await self._client._send_command('!TRIMCENTER?')
         if response and '!TRIMCENTER(' in response:
             level = response.split('(')[1].split(')')[0]
@@ -939,7 +940,7 @@ class AsyncChannelTrimControl(ChannelTrimControl):
     async def center_down(self):
         return await self._client._send_command('!TRIMCENTER-')
 
-    async def get_lfe(self) -> Optional[int]:
+    async def get_lfe(self) -> int | None:
         response = await self._client._send_command('!TRIMLFE?')
         if response and '!TRIMLFE(' in response:
             level = response.split('(')[1].split(')')[0]
@@ -955,7 +956,7 @@ class AsyncChannelTrimControl(ChannelTrimControl):
     async def lfe_down(self):
         return await self._client._send_command('!TRIMLFE-')
 
-    async def get_surrounds(self) -> Optional[int]:
+    async def get_surrounds(self) -> int | None:
         response = await self._client._send_command('!TRIMSURRS?')
         if response and '!TRIMSURRS(' in response:
             level = response.split('(')[1].split(')')[0]
@@ -971,7 +972,7 @@ class AsyncChannelTrimControl(ChannelTrimControl):
     async def surrounds_down(self):
         return await self._client._send_command('!TRIMSURRS-')
 
-    async def get_height(self) -> Optional[int]:
+    async def get_height(self) -> int | None:
         response = await self._client._send_command('!TRIMHEIGHT?')
         if response and '!TRIMHEIGHT(' in response:
             level = response.split('(')[1].split(')')[0]
@@ -989,7 +990,7 @@ class AsyncChannelTrimControl(ChannelTrimControl):
 
 
 class AsyncDeviceControl(DeviceControl):
-    async def name(self) -> Optional[str]:
+    async def name(self) -> str | None:
         response = await self._client._send_command('!DEVICE?')
         if response and '!DEVICE(' in response:
             return response.split('(')[1].split(')')[0]

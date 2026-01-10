@@ -4,8 +4,10 @@
     "codeowners": ["@rsnodgrass"],
     "config_flow": true,
     "documentation": "https://github.com/homeassistant-community/hass-mcintosh",
+    "homeassistant": "2025.2.0",
+    "integration_type": "device",
     "iot_class": "local_polling",
     "issue_tracker": "https://github.com/homeassistant-community/hass-mcintosh/issues",
     "requirements": ["pyserial>=3.5", "pyserial-asyncio>=0.6"],
-    "version": "0.2.0"
+    "version": "0.3.0"
 }

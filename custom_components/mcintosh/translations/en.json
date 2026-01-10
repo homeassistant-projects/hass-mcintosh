@@ -2,53 +2,53 @@
   "config": {
     "step": {
       "user": {
-        "title": "McIntosh A/V Processor Setup",
-        "description": "Configure your McIntosh MX160, MX170, or MX180 processor",
+        "title": "Connect to McIntosh Processor",
+        "description": "Set up your McIntosh A/V processor. You can connect via serial port or network.",
         "data": {
-          "model_id": "Model",
-          "url": "Connection (serial port or socket://IP:port)",
-          "baudrate": "Baud Rate (optional)"
+          "model_id": "Processor model",
+          "url": "Connection address",
+          "baudrate": "Serial baud rate"
         },
         "data_description": {
-          "model_id": "Select your McIntosh processor model",
-          "url": "Serial port (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
-          "baudrate": "Serial baud rate (default: 115200)"
+          "model_id": "Select your McIntosh processor model (MX160, MX170, or MX180)",
+          "url": "Enter the serial port path (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
+          "baudrate": "Only needed if your device uses a non-standard baud rate. Leave empty for default (115200)."
         }
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect to the device. Please check your connection settings and ensure the device is powered on.",
-      "unsupported": "This device model is not supported. Supported models: MX160, MX170, MX180."
+      "cannot_connect": "Could not connect to the processor. Please verify the connection address and ensure the device is powered on and accessible.",
+      "unsupported": "This device model is not supported. Currently supported models are MX160, MX170, and MX180."
     },
     "abort": {
-      "already_configured": "This device is already configured."
+      "already_configured": "This processor is already configured in Home Assistant."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "McIntosh Configuration Options",
-        "description": "Configure connection and source settings",
+        "title": "McIntosh Options",
+        "description": "Choose what you would like to configure.",
         "menu_options": {
-          "connection": "Connection Settings",
-          "sources": "Source Names"
+          "connection": "Change connection settings",
+          "sources": "Customize source names"
         }
       },
       "connection": {
         "title": "Connection Settings",
-        "description": "Modify connection parameters for your McIntosh processor",
+        "description": "Update how Home Assistant connects to your McIntosh processor.",
         "data": {
-          "url": "Connection (serial port or socket://IP:port)",
-          "baudrate": "Baud Rate (optional)"
+          "url": "Connection address",
+          "baudrate": "Serial baud rate"
         },
         "data_description": {
-          "url": "Serial port (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
-          "baudrate": "Serial baud rate (default: 115200)"
+          "url": "Serial port path (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
+          "baudrate": "Only needed if your device uses a non-standard baud rate. Leave empty for default (115200)."
         }
       },
       "sources": {
         "title": "Source Names",
-        "description": "Configure custom names for your sources. Leave blank to use defaults.",
+        "description": "Customize the names shown for each input source. Leave blank to use the default name.",
         "data": {
           "source_0": "HDMI 1",
           "source_1": "HDMI 2",
@@ -61,6 +61,19 @@
           "source_17": "USB Audio",
           "source_18": "Analog 1",
           "source_24": "Phono"
+        },
+        "data_description": {
+          "source_0": "Custom name for HDMI input 1",
+          "source_1": "Custom name for HDMI input 2",
+          "source_2": "Custom name for HDMI input 3",
+          "source_3": "Custom name for HDMI input 4",
+          "source_4": "Custom name for HDMI input 5",
+          "source_5": "Custom name for HDMI input 6",
+          "source_6": "Custom name for HDMI input 7",
+          "source_7": "Custom name for HDMI input 8",
+          "source_17": "Custom name for USB Audio input",
+          "source_18": "Custom name for Analog input 1",
+          "source_24": "Custom name for Phono input"
         }
       }
     }
@@ -79,19 +92,28 @@
         "name": "Treble Trim"
       },
       "lipsync_delay": {
-        "name": "Lipsync Delay"
+        "name": "Lip Sync Delay"
       },
       "center_channel_trim": {
         "name": "Center Channel Trim"
       },
       "lfe_channel_trim": {
-        "name": "LFE Channel Trim"
+        "name": "Subwoofer Trim"
       },
       "surround_channels_trim": {
         "name": "Surround Channels Trim"
       },
       "height_channels_trim": {
         "name": "Height Channels Trim"
+      }
+    }
+  },
+  "selector": {
+    "model_id": {
+      "options": {
+        "mx160": "MX160",
+        "mx170": "MX170",
+        "mx180": "MX180"
       }
     }
   }

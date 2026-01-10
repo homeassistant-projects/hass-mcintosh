@@ -1,4 +1,6 @@
 {
-    "name": "McIntosh Audio",
-    "render_readme": true
+    "name": "McIntosh A/V Control",
+    "homeassistant": "2025.2.0",
+    "render_readme": true,
+    "zip_release": false
 }

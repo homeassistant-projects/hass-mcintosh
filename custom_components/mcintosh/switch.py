@@ -1,15 +1,18 @@
-"""Home Assistant McIntosh Switch Platform"""
+"""McIntosh Switch platform."""
+
+from __future__ import annotations
 
 import logging
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import DeviceClientDetails
 from .const import CONF_MODEL, DOMAIN
+from .coordinator import McIntoshCoordinator
 from .pymcintosh.models import get_model_config
 
 LOG = logging.getLogger(__name__)
@@ -20,22 +23,26 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    if data := hass.data[DOMAIN][config_entry.entry_id]:
-        entities = [McIntoshLoudnessSwitch(config_entry, data)]
-        async_add_entities(new_entities=entities, update_before_add=True)
-    else:
-        LOG.error(
-            f'missing pre-connected client for {config_entry}, cannot create switches'
-        )
+    """Set up McIntosh switch from config entry."""
+    coordinator: McIntoshCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    async_add_entities([McIntoshLoudnessSwitch(coordinator, config_entry)])
 
 
-class McIntoshLoudnessSwitch(SwitchEntity):
+class McIntoshLoudnessSwitch(CoordinatorEntity[McIntoshCoordinator], SwitchEntity):
+    """Representation of McIntosh loudness switch."""
+
     _attr_has_entity_name = True
+    _attr_translation_key = 'loudness'
+    _attr_icon = 'mdi:volume-high'
 
-    def __init__(self, config_entry: ConfigEntry, details: DeviceClientDetails) -> None:
+    def __init__(
+        self,
+        coordinator: McIntoshCoordinator,
+        config_entry: ConfigEntry,
+    ) -> None:
+        """Initialize the switch."""
+        super().__init__(coordinator)
         self._config_entry = config_entry
-        self._details = details
-        self._client = details.client
 
         model_id = config_entry.data[CONF_MODEL]
         model_config = get_model_config(model_id)
@@ -43,8 +50,6 @@ class McIntoshLoudnessSwitch(SwitchEntity):
         model_name = model_config['name']
 
         self._attr_unique_id = f'{DOMAIN}_{model_id}_loudness'.lower().replace(' ', '_')
-        self._attr_name = 'Loudness'
-        self._attr_icon = 'mdi:volume-high'
 
         # device info to group with media player
         device_unique_id = f'{DOMAIN}_{model_id}'.lower().replace(' ', '_')
@@ -55,27 +60,19 @@ class McIntoshLoudnessSwitch(SwitchEntity):
             name=f'{manufacturer} {model_name}',
         )
 
-    async def async_added_to_hass(self) -> None:
-        """Turn on the dispatchers."""
-        await self.async_update()
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        if self.coordinator.data:
+            self._attr_is_on = self.coordinator.data.loudness
+        self.async_write_ha_state()
 
-    async def async_update(self):
-        """Retrieve the latest state."""
-        LOG.debug(f'updating {self.unique_id}')
-
-        try:
-            is_on = await self._client.loudness.get()
-            if is_on is not None:
-                self._attr_is_on = is_on
-        except Exception as e:
-            LOG.exception(f'could not update {self.unique_id}: {e}')
-
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs) -> None:
         """Turn loudness on."""
-        await self._client.loudness.on()
-        self.async_schedule_update_ha_state(force_refresh=True)
+        await self.coordinator.client.loudness.on()
+        await self.coordinator.async_request_refresh()
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn loudness off."""
-        await self._client.loudness.off()
-        self.async_schedule_update_ha_state(force_refresh=True)
+        await self.coordinator.client.loudness.off()
+        await self.coordinator.async_request_refresh()

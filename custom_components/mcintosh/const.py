@@ -1,12 +1,12 @@
-"""Constants for the McIntosh integration"""
+"""Constants for the McIntosh integration."""
 
 from __future__ import annotations
 
 from typing import Final
 
-from .pymcintosh.models import SUPPORTED_MODELS, DEFAULT_IP_PORT
+from .pymcintosh.models import DEFAULT_IP_PORT, SUPPORTED_MODELS
 
-DOMAIN: Final[str] = 'mcintosh'
+DOMAIN: Final = 'mcintosh'
 
 DEFAULT_URL: Final = f'socket://mcintosh.local:{DEFAULT_IP_PORT}'
 

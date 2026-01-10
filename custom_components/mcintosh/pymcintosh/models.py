@@ -1,6 +1,8 @@
 """McIntosh device model definitions and configurations."""
 
-from typing import Dict, Any
+from __future__ import annotations
+
+from typing import Any
 
 # connection parameters
 DEFAULT_BAUD_RATE = 115200
@@ -15,7 +17,7 @@ MX170_MIN_TIME_BETWEEN_COMMANDS = 0.4  # seconds
 MX180_MIN_TIME_BETWEEN_COMMANDS = 0.1  # seconds (may be faster)
 
 # source input definitions (same across all models)
-SOURCES = {
+SOURCES: dict[int, str] = {
     0: 'HDMI 1',
     1: 'HDMI 2',
     2: 'HDMI 3',
@@ -44,7 +46,7 @@ SOURCES = {
     25: '8 Channel Analog',
 }
 
-MODEL_CONFIGS: Dict[str, Dict[str, Any]] = {
+MODEL_CONFIGS: dict[str, dict[str, Any]] = {
     'mx160': {
         'name': 'MX160',
         'description': 'McIntosh MX160 Processor',
@@ -104,7 +106,7 @@ MODEL_CONFIGS: Dict[str, Dict[str, Any]] = {
 SUPPORTED_MODELS = list(MODEL_CONFIGS.keys())
 
 
-def get_model_config(model_id: str) -> Dict[str, Any]:
+def get_model_config(model_id: str) -> dict[str, Any]:
     """Get configuration for a specific model."""
     if model_id not in MODEL_CONFIGS:
         raise ValueError(

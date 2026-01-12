@@ -4,19 +4,15 @@
 ![release_date](https://img.shields.io/github/release-date/homeassistant-community/hass-mcintosh.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/MIT)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
-[![Support on Patreon][patreon-shield]][patreon]
-
 
 ![McIntosh Logo](https://github.com/homeassistant-projects/hass-mcintosh/blob/main/brands/logo.png?raw=true)
 
-Control your McIntosh MX160, MX170, or MX180 audio/video processor from Home Assistant via RS232 or IP connection.
+Control your McIntosh A/V processor from Home Assistant via RS232 or IP connection. Supports MX123, MX151, MX160, MX170, and MX180 models.
 
 ## Status
 
-**Implementation Complete!** This integration is fully implemented with config flow UI, source customization, and all basic media player controls. Ready for hardware testing with McIntosh MX160, MX170, or MX180 processors.
+**Implementation Complete!** This integration is fully implemented with config flow UI, source customization, and all basic media player controls. Ready for hardware testing with McIntosh processors.
 
 ## Features
 
@@ -37,6 +33,8 @@ Control your McIntosh MX160, MX170, or MX180 audio/video processor from Home Ass
 
 | Model | Status | Notes |
 |-------|--------|-------|
+| McIntosh MX123 | Untested | Should work, needs hardware testing |
+| McIntosh MX151 | Untested | Should work, needs hardware testing |
 | McIntosh MX160 | Untested | Should work, needs hardware testing |
 | McIntosh MX170 | Untested | Should work, needs hardware testing |
 | McIntosh MX180 | Untested | Should work, needs hardware testing |
@@ -124,6 +122,10 @@ All 26 McIntosh source inputs are supported:
 
 ## Support
 
+This integration is maintained in my free time. Sponsorship directly funds new device support and faster updates.
+
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
+
 - **Issues**: [GitHub Issues](https://github.com/homeassistant-community/hass-mcintosh/issues)
 - **Community**: [Home Assistant Community Forum](https://community.home-assistant.io/t/mcintosh-dayton-audio-sonance-multi-zone-amps/450908)
 - **Pull Requests**: Contributions welcome!
@@ -135,7 +137,7 @@ This integration uses an embedded Python library (`pymcintosh`) for communicatio
 - Async/await support for Home Assistant
 - Command throttling to prevent device overload
 - Proper error handling and recovery
-- Model-specific configurations (MX160/MX170/MX180)
+- Model-specific configurations (MX123/MX151/MX160/MX170/MX180)
 
 The library is embedded within `custom_components/mcintosh/pymcintosh/` and is automatically installed with the integration.
 
@@ -144,6 +146,4 @@ The library is embedded within `custom_components/mcintosh/pymcintosh/` and is a
 
 [forum]: https://forum/mcintosh
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg
-[patreon]: https://www.patreon.com/rsnodgrass
-[patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg

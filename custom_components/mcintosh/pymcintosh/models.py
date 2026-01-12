@@ -16,6 +16,18 @@ MX160_MIN_TIME_BETWEEN_COMMANDS = 0.4  # seconds
 MX170_MIN_TIME_BETWEEN_COMMANDS = 0.4  # seconds
 MX180_MIN_TIME_BETWEEN_COMMANDS = 0.1  # seconds (may be faster)
 
+# source groups for UI organization
+SOURCE_GROUP_HDMI = 'hdmi'
+SOURCE_GROUP_DIGITAL = 'digital'
+SOURCE_GROUP_ANALOG = 'analog'
+
+# source IDs by group
+SOURCE_GROUPS: dict[str, list[int]] = {
+    SOURCE_GROUP_HDMI: [0, 1, 2, 3, 4, 5, 6, 7],  # HDMI 1-8
+    SOURCE_GROUP_DIGITAL: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17],  # ARC, SPDIF, USB
+    SOURCE_GROUP_ANALOG: [18, 19, 20, 21, 22, 23, 24, 25],  # Analog, Balanced, Phono
+}
+
 # source input definitions (same across all models)
 SOURCES: dict[int, str] = {
     0: 'HDMI 1',
@@ -53,7 +65,7 @@ MODEL_CONFIGS: dict[str, dict[str, Any]] = {
         'tested': True,
         'min_time_between_commands': MX160_MIN_TIME_BETWEEN_COMMANDS,
         'supports_max_volume_query': False,
-        'connection_init': '!VERB(2)',  # set to normal verbosity on connect
+        'connection_init': '!VERB(2)',
         'rs232': {
             'baudrate': DEFAULT_BAUD_RATE,
             'bytesize': 8,
@@ -64,6 +76,16 @@ MODEL_CONFIGS: dict[str, dict[str, Any]] = {
         'ip': {
             'port': DEFAULT_IP_PORT,
         },
+        # capability flags for UI adaptation
+        'hdmi_count': 8,
+        'zone_count': 2,
+        'supports_zone_2': True,
+        'supports_zone_3': False,
+        'supports_loudness': True,
+        'supports_audio_trim': True,
+        'supports_channel_trim': True,
+        'supports_lipsync': True,
+        'source_groups': [SOURCE_GROUP_HDMI, SOURCE_GROUP_DIGITAL, SOURCE_GROUP_ANALOG],
     },
     'mx170': {
         'name': 'MX170',
@@ -82,6 +104,17 @@ MODEL_CONFIGS: dict[str, dict[str, Any]] = {
         'ip': {
             'port': DEFAULT_IP_PORT,
         },
+        # capability flags for UI adaptation
+        'hdmi_count': 8,
+        'zone_count': 3,
+        'supports_zone_2': True,
+        'supports_zone_3': True,
+        'supports_loudness': True,
+        'supports_audio_trim': True,
+        'supports_channel_trim': True,
+        'supports_lipsync': True,
+        'supports_atmos': True,
+        'source_groups': [SOURCE_GROUP_HDMI, SOURCE_GROUP_DIGITAL, SOURCE_GROUP_ANALOG],
     },
     'mx180': {
         'name': 'MX180',
@@ -100,6 +133,18 @@ MODEL_CONFIGS: dict[str, dict[str, Any]] = {
         'ip': {
             'port': DEFAULT_IP_PORT,
         },
+        # capability flags for UI adaptation
+        'hdmi_count': 8,
+        'zone_count': 3,
+        'supports_zone_2': True,
+        'supports_zone_3': True,
+        'supports_loudness': True,
+        'supports_audio_trim': True,
+        'supports_channel_trim': True,
+        'supports_lipsync': True,
+        'supports_atmos': True,
+        'supports_dtsx': True,
+        'source_groups': [SOURCE_GROUP_HDMI, SOURCE_GROUP_DIGITAL, SOURCE_GROUP_ANALOG],
     },
 }
 

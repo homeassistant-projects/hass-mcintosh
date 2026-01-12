@@ -2,23 +2,117 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to McIntosh Processor",
-        "description": "Set up your McIntosh A/V processor. You can connect via serial port or network.",
+        "title": "Select McIntosh Processor",
+        "description": "Choose your processor model to begin setup. [☕ Tip the Author](https://buymeacoffee.com/DYks67r)",
         "data": {
-          "model_id": "Processor model",
+          "model_id": "Processor model"
+        }
+      },
+      "connection": {
+        "title": "Connect to {model_name}",
+        "description": "Enter the connection details for your processor.\n\n**Network:** `socket://192.168.1.100:84`\n**Serial:** `/dev/ttyUSB0` or `COM3`",
+        "data": {
           "url": "Connection address",
-          "baudrate": "Serial baud rate"
+          "baudrate": "Serial baud rate (optional)"
         },
         "data_description": {
-          "model_id": "Select your McIntosh processor model (MX160, MX170, or MX180)",
-          "url": "Enter the serial port path (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
-          "baudrate": "Only needed if your device uses a non-standard baud rate. Leave empty for default (115200)."
+          "url": "Default: socket://mcintosh.local:84",
+          "baudrate": "Leave empty for default (115200)"
+        }
+      },
+      "zones": {
+        "title": "Name Your Zones",
+        "description": "Your {model_name} supports {zone_count} audio zones. Give each zone a friendly name.\n\n**Examples:** Living Room, Patio, Bedroom",
+        "data": {
+          "main_zone_name": "Main zone name",
+          "zone_2_enabled": "Enable Zone 2",
+          "zone_2_name": "Zone 2 name",
+          "zone_3_enabled": "Enable Zone 3",
+          "zone_3_name": "Zone 3 name"
+        },
+        "data_description": {
+          "main_zone_name": "Name for your primary listening area",
+          "zone_2_name": "Example: Patio, Bedroom, Kitchen",
+          "zone_3_name": "Example: Office, Garage, Guest Room"
+        }
+      },
+      "source_groups": {
+        "title": "Configure Input Sources",
+        "description": "Select which input groups you want to customize. You can rename individual sources to match your connected devices.\n\n**Tip:** You can skip this and configure later in Options.",
+        "data": {
+          "enabled_source_groups": "Source groups to configure"
+        }
+      },
+      "sources_hdmi": {
+        "title": "Name HDMI Sources",
+        "description": "Give your HDMI inputs friendly names. Leave blank to use defaults.\n\n**Examples:** Apple TV, Xbox, Blu-ray Player",
+        "data": {
+          "source_0": "HDMI 1",
+          "source_1": "HDMI 2",
+          "source_2": "HDMI 3",
+          "source_3": "HDMI 4",
+          "source_4": "HDMI 5",
+          "source_5": "HDMI 6",
+          "source_6": "HDMI 7",
+          "source_7": "HDMI 8"
+        }
+      },
+      "sources_digital": {
+        "title": "Name Digital Audio Sources",
+        "description": "Configure your digital audio inputs. Leave blank to use defaults.",
+        "data": {
+          "source_8": "Audio Return Channel",
+          "source_9": "SPDIF 1 (Optical)",
+          "source_10": "SPDIF 2 (Optical)",
+          "source_11": "SPDIF 3 (Optical)",
+          "source_12": "SPDIF 4 (Optical)",
+          "source_13": "SPDIF 5 (AES/EBU)",
+          "source_14": "SPDIF 6 (Coaxial)",
+          "source_15": "SPDIF 7 (Coaxial)",
+          "source_16": "SPDIF 8 (Coaxial)",
+          "source_17": "USB Audio"
+        }
+      },
+      "sources_analog": {
+        "title": "Name Analog Sources",
+        "description": "Configure your analog inputs. Leave blank to use defaults.\n\n**Examples:** Turntable, CD Player, Tape Deck",
+        "data": {
+          "source_18": "Analog 1",
+          "source_19": "Analog 2",
+          "source_20": "Analog 3",
+          "source_21": "Analog 4",
+          "source_22": "Balanced 1",
+          "source_23": "Balanced 2",
+          "source_24": "Phono",
+          "source_25": "8 Channel Analog"
+        }
+      },
+      "features": {
+        "title": "Optional Features",
+        "description": "Choose which controls to enable. These create additional entities in Home Assistant.",
+        "data": {
+          "enable_loudness": "Loudness compensation",
+          "enable_audio_trim": "Bass and treble controls",
+          "enable_channel_trim": "Individual channel trim",
+          "enable_lipsync": "Lip sync delay",
+          "polling_interval": "Status update interval"
+        },
+        "data_description": {
+          "enable_loudness": "Switch to enable/disable loudness for low-volume listening",
+          "enable_audio_trim": "Sliders to adjust bass and treble levels",
+          "enable_channel_trim": "Fine-tune center, subwoofer, surrounds, and height channels",
+          "enable_lipsync": "Adjust audio delay to sync with video",
+          "polling_interval": "How often to check device status (lower = more responsive)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Could not connect to the processor. Please verify the connection address and ensure the device is powered on and accessible.",
-      "unsupported": "This device model is not supported. Currently supported models are MX160, MX170, and MX180."
+      "cannot_connect": "Unable to connect. Please verify connection details and try again.",
+      "connection_refused": "Connection refused. Check that the IP address and port 84 are correct.",
+      "connection_timeout": "Connection timed out. Verify the device is on the network and powered on.",
+      "no_response": "Connected but device didn't respond. Check device power and model selection.",
+      "permission_denied": "Permission denied. Check that the user has access to the serial port.",
+      "unsupported": "This device model is not supported."
     },
     "abort": {
       "already_configured": "This processor is already configured in Home Assistant."
@@ -28,27 +122,40 @@
     "step": {
       "init": {
         "title": "McIntosh Options",
-        "description": "Choose what you would like to configure.",
+        "description": "What would you like to configure?",
         "menu_options": {
-          "connection": "Change connection settings",
-          "sources": "Customize source names"
+          "connection": "Connection Settings",
+          "zones": "Zone Names",
+          "sources": "Rename Input Sources",
+          "features": "Features & Controls"
         }
       },
       "connection": {
         "title": "Connection Settings",
-        "description": "Update how Home Assistant connects to your McIntosh processor.",
+        "description": "Update how Home Assistant connects to your processor.",
         "data": {
           "url": "Connection address",
           "baudrate": "Serial baud rate"
         },
         "data_description": {
-          "url": "Serial port path (e.g., /dev/ttyUSB0) or network address (e.g., socket://192.168.1.100:84)",
-          "baudrate": "Only needed if your device uses a non-standard baud rate. Leave empty for default (115200)."
+          "url": "Network: socket://IP:84 | Serial: /dev/ttyUSB0",
+          "baudrate": "Leave empty for default (115200)"
+        }
+      },
+      "zones": {
+        "title": "Zone Names",
+        "description": "Rename your audio zones or enable/disable additional zones.",
+        "data": {
+          "main_zone_name": "Main zone name",
+          "zone_2_enabled": "Enable Zone 2",
+          "zone_2_name": "Zone 2 name",
+          "zone_3_enabled": "Enable Zone 3",
+          "zone_3_name": "Zone 3 name"
         }
       },
       "sources": {
-        "title": "Source Names",
-        "description": "Customize the names shown for each input source. Leave blank to use the default name.",
+        "title": "Rename Input Sources",
+        "description": "Give your inputs friendly names like 'Apple TV' or 'Turntable'. Leave blank to use default names.",
         "data": {
           "source_0": "HDMI 1",
           "source_1": "HDMI 2",
@@ -58,22 +165,42 @@
           "source_5": "HDMI 6",
           "source_6": "HDMI 7",
           "source_7": "HDMI 8",
+          "source_8": "Audio Return",
+          "source_9": "SPDIF 1 (Optical)",
+          "source_10": "SPDIF 2 (Optical)",
+          "source_11": "SPDIF 3 (Optical)",
+          "source_12": "SPDIF 4 (Optical)",
+          "source_13": "SPDIF 5 (AES/EBU)",
+          "source_14": "SPDIF 6 (Coaxial)",
+          "source_15": "SPDIF 7 (Coaxial)",
+          "source_16": "SPDIF 8 (Coaxial)",
           "source_17": "USB Audio",
           "source_18": "Analog 1",
-          "source_24": "Phono"
+          "source_19": "Analog 2",
+          "source_20": "Analog 3",
+          "source_21": "Analog 4",
+          "source_22": "Balanced 1",
+          "source_23": "Balanced 2",
+          "source_24": "Phono",
+          "source_25": "8 Channel Analog"
+        }
+      },
+      "features": {
+        "title": "Features & Controls",
+        "description": "Enable or disable optional features and adjust polling settings.",
+        "data": {
+          "enable_loudness": "Loudness compensation",
+          "enable_audio_trim": "Bass and treble controls",
+          "enable_channel_trim": "Individual channel trim",
+          "enable_lipsync": "Lip sync delay",
+          "polling_interval": "Status update interval"
         },
         "data_description": {
-          "source_0": "Custom name for HDMI input 1",
-          "source_1": "Custom name for HDMI input 2",
-          "source_2": "Custom name for HDMI input 3",
-          "source_3": "Custom name for HDMI input 4",
-          "source_4": "Custom name for HDMI input 5",
-          "source_5": "Custom name for HDMI input 6",
-          "source_6": "Custom name for HDMI input 7",
-          "source_7": "Custom name for HDMI input 8",
-          "source_17": "Custom name for USB Audio input",
-          "source_18": "Custom name for Analog input 1",
-          "source_24": "Custom name for Phono input"
+          "enable_loudness": "Switch to enable/disable loudness",
+          "enable_audio_trim": "Bass and treble adjustment sliders",
+          "enable_channel_trim": "Center, subwoofer, surrounds, height controls",
+          "enable_lipsync": "Audio/video sync delay adjustment",
+          "polling_interval": "Seconds between status checks"
         }
       }
     }
@@ -86,34 +213,34 @@
     },
     "number": {
       "bass_trim": {
-        "name": "Bass Trim"
+        "name": "Bass"
       },
       "treble_trim": {
-        "name": "Treble Trim"
+        "name": "Treble"
       },
       "lipsync_delay": {
-        "name": "Lip Sync Delay"
+        "name": "Lip Sync"
       },
       "center_channel_trim": {
-        "name": "Center Channel Trim"
+        "name": "Center Channel"
       },
       "lfe_channel_trim": {
-        "name": "Subwoofer Trim"
+        "name": "Subwoofer"
       },
       "surround_channels_trim": {
-        "name": "Surround Channels Trim"
+        "name": "Surrounds"
       },
       "height_channels_trim": {
-        "name": "Height Channels Trim"
+        "name": "Height Channels"
       }
     }
   },
   "selector": {
     "model_id": {
       "options": {
-        "mx160": "MX160",
-        "mx170": "MX170",
-        "mx180": "MX180"
+        "mx160": "MX160 (8 HDMI, 2 zones)",
+        "mx170": "MX170 (8 HDMI, 3 zones, Atmos)",
+        "mx180": "MX180 (8 HDMI, 3 zones, DTS:X)"
       }
     }
   }
